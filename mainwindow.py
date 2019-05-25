@@ -6,6 +6,7 @@ from port_parameters_ui import Ui_Form
 from graph_ui import Ui_Graph_editor
 import sys
 import serial
+from serial.tools.list_ports_windows import comports
 
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
@@ -16,14 +17,19 @@ import random
 class mywindow(QtWidgets.QMainWindow):
 
     tray_icon = None
+    etalon_temp = None
 
     def __init__(self):
         super(mywindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # Соединения кнопок меню
         self.ui.exit.triggered.connect(qApp.quit)
         self.ui.ports.triggered.connect(self.ports_open)
         self.ui.graph.triggered.connect(self.graph_open)
+
+        # Настройка графиков
         self.ui.MplWidget_1.canvas.axes.set_title('Печь №1')
         self.ui.MplWidget_2.canvas.axes.set_title('Печь №2')
         self.ui.MplWidget_3.canvas.axes.set_title('Печь №3')
@@ -66,18 +72,30 @@ class mywindow(QtWidgets.QMainWindow):
         )
 
     def graph_open(self):
-        print('hello from graph')
-        self.window = QtWidgets.QMainWindow()
+        self.window_graph = QtWidgets.QMainWindow()
         self.ui = Ui_Graph_editor()
-        self.ui.setupUi(self.window)
-        self.window.show()
+        self.ui.setupUi(self.window_graph)
+        self.ui.MplWidgetGraphEditor.canvas.axes.set_title('Эталон')
+        # self.ui.lineEdit.editingFinished.connect(self.update_etalon_graph)
+        self.etalon_temp = [100, 200, 300]
+        self.etalon_time = [1, 2, 3]
+        self.ui.MplWidgetGraphEditor.canvas.axes.clear()
+        self.ui.MplWidgetGraphEditor.canvas.axes.plot(self.etalon_time, self.etalon_temp)
+        self.ui.MplWidgetGraphEditor.canvas.draw()
+        self.window_graph.show()
 
     def ports_open(self):
-        print('lalalal')
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_Form()
-        self.ui.setupUi(self.window)
-        self.window.show()
+        self.window_ports = QtWidgets.QMainWindow()
+        self.ui_ports = Ui_Form()
+        self.ui_ports.setupUi(self.window_ports)
+        for dev in comports():
+            self.ui_ports.port_Name_comboBox.addItem(str(dev).split()[0])
+        self.ui_ports.port_Name_comboBox.editTextChanged.connect(self.port_name_changed())
+        self.window_ports.show()
+
+    def port_name_changed(self):
+        print('1111')
+        print(self.ui_ports.port_Name_comboBox.currentText())
 
         # ser = serial.Serial()  # open serial port
         # ser.baudrate = 9600
@@ -91,7 +109,12 @@ class mywindow(QtWidgets.QMainWindow):
         # if window2 is None:
         # window2 = port_parameters_ui.Ui_Form()
         # window2.show()
-
+    def update_etalon_graph(self):
+        print(self.ui.lineEdit.text())
+        with open('graph.cfg', 'r') as graph_file:
+            for graph_text in graph_file:
+                graph_text.append(graph_file.readline())
+        print(graph_text)
 
     def update_graph(self):
         fs = 500

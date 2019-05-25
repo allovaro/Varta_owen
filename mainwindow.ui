@@ -6,108 +6,138 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>793</width>
-    <height>546</height>
+    <width>899</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Анализатор</string>
+   <string>Анализатор Варта ТП703</string>
   </property>
   <property name="windowIcon">
    <iconset>
-    <activeon>money.png</activeon>
+    <activeon>lines.png</activeon>
    </iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="gridLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>-1</x>
-      <y>-1</y>
-      <width>791</width>
-      <height>501</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QTabWidget" name="tabWidget">
-       <property name="accessibleName">
-        <string/>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="tab">
-        <attribute name="title">
-         <string>Печь 1</string>
-        </attribute>
-        <widget class="MplWidget" name="MplWidget" native="true">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>641</width>
-           <height>471</height>
-          </rect>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <attribute name="title">
-         <string>Печь 2</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_3">
-        <attribute name="title">
-         <string>Печь 3</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_4">
-        <attribute name="title">
-         <string>Печь 4</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_5">
-        <attribute name="title">
-         <string>Печь 5</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_6">
-        <attribute name="title">
-         <string>Печь 6</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_7">
-        <attribute name="title">
-         <string>Печь 7</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_8">
-        <attribute name="title">
-         <string>Печь 8</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_9">
-        <attribute name="title">
-         <string>Печь 9</string>
-        </attribute>
-       </widget>
-       <widget class="QWidget" name="tab_10">
-        <attribute name="title">
-         <string>Печь 10</string>
-        </attribute>
-       </widget>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="accessibleName">
+       <string/>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Печь 1</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_1" native="true"/>
+        </item>
+       </layout>
       </widget>
-     </item>
-    </layout>
-   </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Печь 2</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_2" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Печь 3</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_3" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Печь 4</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="MplWidget" name="MplWidget_4" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>Печь 5</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_5" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_6">
+       <attribute name="title">
+        <string>Печь 6</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_6" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_7">
+       <attribute name="title">
+        <string>Печь 7</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_7" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_8">
+       <attribute name="title">
+        <string>Печь 8</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_8" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_9">
+       <attribute name="title">
+        <string>Печь 9</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_9" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_10">
+       <attribute name="title">
+        <string>Печь 10</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0">
+         <widget class="MplWidget" name="MplWidget_10" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>793</width>
+     <width>899</width>
      <height>21</height>
     </rect>
    </property>
@@ -118,6 +148,9 @@
     <addaction name="ports"/>
     <addaction name="folders"/>
     <addaction name="events"/>
+    <addaction name="graph"/>
+    <addaction name="separator"/>
+    <addaction name="exit"/>
    </widget>
    <widget class="QMenu" name="Help">
     <property name="title">
@@ -150,6 +183,22 @@
   <action name="events">
    <property name="text">
     <string>Уведомления</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="exit">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="graph">
+   <property name="text">
+    <string>Опорный график</string>
    </property>
   </action>
  </widget>

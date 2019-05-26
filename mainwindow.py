@@ -76,7 +76,28 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui = Ui_Graph_editor()
         self.ui.setupUi(self.window_graph)
         self.ui.MplWidgetGraphEditor.canvas.axes.set_title('Эталон')
-        # self.ui.lineEdit.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp1.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp2.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp3.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp4.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp5.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp6.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp7.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp8.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp9.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp10.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTemp11.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime1.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime2.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime3.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime4.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime5.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime6.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime7.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime8.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime9.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime10.editingFinished.connect(self.update_etalon_graph)
+        self.ui.lineEditTime11.editingFinished.connect(self.update_etalon_graph)
         self.etalon_temp = [100, 200, 300]
         self.etalon_time = [1, 2, 3]
         self.ui.MplWidgetGraphEditor.canvas.axes.clear()
@@ -110,11 +131,15 @@ class mywindow(QtWidgets.QMainWindow):
         # window2 = port_parameters_ui.Ui_Form()
         # window2.show()
     def update_etalon_graph(self):
-        print(self.ui.lineEdit.text())
-        with open('graph.cfg', 'r') as graph_file:
-            for graph_text in graph_file:
-                graph_text.append(graph_file.readline())
-        print(graph_text)
+        time_line = []
+        temp_line = []
+        print(self.ui.lineEditTime1.text())
+        # print(self.ui.lineEdit.text())
+        # time_line.append(int(self.ui.lineEditTime1.text()))
+        # with open('graph.cfg', 'r') as graph_file:
+        #     for graph_text in graph_file:
+        #         graph_text.append(graph_file.readline())
+        # print(graph_text)
 
     def update_graph(self):
         fs = 500

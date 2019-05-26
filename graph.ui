@@ -24,7 +24,7 @@
     <activeon>lines.png</activeon>
    </iconset>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>9</x>
@@ -260,7 +260,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit">
+         <widget class="QLineEdit" name="lineEditTemp1">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -276,7 +276,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_2">
+         <widget class="QLineEdit" name="lineEditTemp2">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -292,7 +292,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_3">
+         <widget class="QLineEdit" name="lineEditTemp3">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -308,7 +308,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_4">
+         <widget class="QLineEdit" name="lineEditTemp4">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -324,7 +324,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_5">
+         <widget class="QLineEdit" name="lineEditTemp5">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -340,7 +340,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_6">
+         <widget class="QLineEdit" name="lineEditTemp6">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -356,7 +356,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_7">
+         <widget class="QLineEdit" name="lineEditTemp7">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -372,7 +372,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_8">
+         <widget class="QLineEdit" name="lineEditTemp8">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -388,7 +388,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_9">
+         <widget class="QLineEdit" name="lineEditTemp9">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -404,7 +404,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_10">
+         <widget class="QLineEdit" name="lineEditTemp10">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -420,7 +420,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_11">
+         <widget class="QLineEdit" name="lineEditTemp11">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -452,7 +452,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_12">
+         <widget class="QLineEdit" name="lineEditTime1">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -468,7 +468,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_13">
+         <widget class="QLineEdit" name="lineEditTime2">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -484,7 +484,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_14">
+         <widget class="QLineEdit" name="lineEditTime3">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -500,7 +500,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_15">
+         <widget class="QLineEdit" name="lineEditTime4">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -516,7 +516,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_16">
+         <widget class="QLineEdit" name="lineEditTime5">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -532,7 +532,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_17">
+         <widget class="QLineEdit" name="lineEditTime6">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -548,7 +548,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_18">
+         <widget class="QLineEdit" name="lineEditTime7">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -564,7 +564,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_19">
+         <widget class="QLineEdit" name="lineEditTime8">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -580,7 +580,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_20">
+         <widget class="QLineEdit" name="lineEditTime9">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -596,7 +596,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_21">
+         <widget class="QLineEdit" name="lineEditTime10">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -612,7 +612,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_22">
+         <widget class="QLineEdit" name="lineEditTime11">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -653,28 +653,28 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>lineEdit_12</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_13</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>lineEdit_14</tabstop>
-  <tabstop>lineEdit_4</tabstop>
-  <tabstop>lineEdit_15</tabstop>
-  <tabstop>lineEdit_5</tabstop>
-  <tabstop>lineEdit_16</tabstop>
-  <tabstop>lineEdit_6</tabstop>
-  <tabstop>lineEdit_17</tabstop>
-  <tabstop>lineEdit_7</tabstop>
-  <tabstop>lineEdit_18</tabstop>
-  <tabstop>lineEdit_8</tabstop>
-  <tabstop>lineEdit_19</tabstop>
-  <tabstop>lineEdit_9</tabstop>
-  <tabstop>lineEdit_20</tabstop>
-  <tabstop>lineEdit_10</tabstop>
-  <tabstop>lineEdit_21</tabstop>
-  <tabstop>lineEdit_11</tabstop>
-  <tabstop>lineEdit_22</tabstop>
+  <tabstop>lineEditTemp1</tabstop>
+  <tabstop>lineEditTime1</tabstop>
+  <tabstop>lineEditTemp2</tabstop>
+  <tabstop>lineEditTime2</tabstop>
+  <tabstop>lineEditTemp3</tabstop>
+  <tabstop>lineEditTime3</tabstop>
+  <tabstop>lineEditTemp4</tabstop>
+  <tabstop>lineEditTime4</tabstop>
+  <tabstop>lineEditTemp5</tabstop>
+  <tabstop>lineEditTime5</tabstop>
+  <tabstop>lineEditTemp6</tabstop>
+  <tabstop>lineEditTime6</tabstop>
+  <tabstop>lineEditTemp7</tabstop>
+  <tabstop>lineEditTime7</tabstop>
+  <tabstop>lineEditTemp8</tabstop>
+  <tabstop>lineEditTime8</tabstop>
+  <tabstop>lineEditTemp9</tabstop>
+  <tabstop>lineEditTime9</tabstop>
+  <tabstop>lineEditTemp10</tabstop>
+  <tabstop>lineEditTime10</tabstop>
+  <tabstop>lineEditTemp11</tabstop>
+  <tabstop>lineEditTime11</tabstop>
  </tabstops>
  <resources/>
  <connections/>

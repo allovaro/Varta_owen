@@ -130,108 +130,117 @@ class mywindow(QtWidgets.QMainWindow):
         with open('graph.cfg', 'r') as fr:
             line = fr.readline()
             self.temp_line = line.split()
+            self.temp_line = list(map(float, self.temp_line))
+            line = fr.readline()
+            self.time_line = line.split()
+            self.time_line = list(map(float, self.time_line))
             fr.close()
         print('temp_line[0]:')
         # print(self.temp_line[0])
         if len(self.temp_line) >= 1:
-            self.ui_graph.lineEditTemp1.setText(self.temp_line[0])
+            self.ui_graph.lineEditTemp1.setText(str(self.temp_line[0]))
         if len(self.temp_line) >= 2:
-            self.ui_graph.lineEditTemp2.setText(self.temp_line[1])
+            self.ui_graph.lineEditTemp2.setText(str(self.temp_line[1]))
         if len(self.temp_line) >= 3:
-            self.ui_graph.lineEditTemp3.setText(self.temp_line[2])
+            self.ui_graph.lineEditTemp3.setText(str(self.temp_line[2]))
         if len(self.temp_line) >= 4:
-            self.ui_graph.lineEditTemp4.setText(self.temp_line[3])
+            self.ui_graph.lineEditTemp4.setText(str(self.temp_line[3]))
         if len(self.temp_line) >= 5:
-            self.ui_graph.lineEditTemp5.setText(self.temp_line[4])
+            self.ui_graph.lineEditTemp5.setText(str(self.temp_line[4]))
         if len(self.temp_line) >= 6:
-            self.ui_graph.lineEditTemp6.setText(self.temp_line[5])
+            self.ui_graph.lineEditTemp6.setText(str(self.temp_line[5]))
         if len(self.temp_line) >= 7:
-            self.ui_graph.lineEditTemp7.setText(self.temp_line[6])
+            self.ui_graph.lineEditTemp7.setText(str(self.temp_line[6]))
         if len(self.temp_line) >= 8:
-            self.ui_graph.lineEditTemp8.setText(self.temp_line[7])
+            self.ui_graph.lineEditTemp8.setText(str(self.temp_line[7]))
         if len(self.temp_line) >= 9:
-            self.ui_graph.lineEditTemp9.setText(self.temp_line[8])
+            self.ui_graph.lineEditTemp9.setText(str(self.temp_line[8]))
         if len(self.temp_line) >= 10:
-            self.ui_graph.lineEditTemp10.setText(self.temp_line[9])
+            self.ui_graph.lineEditTemp10.setText(str(self.temp_line[9]))
         if len(self.temp_line) >= 11:
-            self.ui_graph.lineEditTemp11.setText(self.temp_line[10])
+            self.ui_graph.lineEditTemp11.setText(str(self.temp_line[10]))
         if len(self.temp_line) >= 12:
-            self.ui_graph.lineEditTemp12.setText(self.temp_line[11])
+            self.ui_graph.lineEditTemp12.setText(str(self.temp_line[11]))
         if len(self.temp_line) >= 13:
-            self.ui_graph.lineEditTemp13.setText(self.temp_line[12])
+            self.ui_graph.lineEditTemp13.setText(str(self.temp_line[12]))
         if len(self.temp_line) >= 14:
-            self.ui_graph.lineEditTemp14.setText(self.temp_line[13])
+            self.ui_graph.lineEditTemp14.setText(str(self.temp_line[13]))
         if len(self.temp_line) >= 15:
-            self.ui_graph.lineEditTemp15.setText(self.temp_line[14])
+            self.ui_graph.lineEditTemp15.setText(str(self.temp_line[14]))
         if len(self.temp_line) >= 16:
-            self.ui_graph.lineEditTemp16.setText(self.temp_line[15])
+            self.ui_graph.lineEditTemp16.setText(str(self.temp_line[15]))
         if len(self.temp_line) >= 17:
-            self.ui_graph.lineEditTemp17.setText(self.temp_line[16])
+            self.ui_graph.lineEditTemp17.setText(str(self.temp_line[16]))
         if len(self.temp_line) >= 18:
-            self.ui_graph.lineEditTemp18.setText(self.temp_line[17])
+            self.ui_graph.lineEditTemp18.setText(str(self.temp_line[17]))
         if len(self.temp_line) >= 19:
-            self.ui_graph.lineEditTemp19.setText(self.temp_line[18])
+            self.ui_graph.lineEditTemp19.setText(str(self.temp_line[18]))
         if len(self.temp_line) >= 20:
-            self.ui_graph.lineEditTemp20.setText(self.temp_line[19])
+            self.ui_graph.lineEditTemp20.setText(str(self.temp_line[19]))
         if len(self.temp_line) >= 21:
-            self.ui_graph.lineEditTemp21.setText(self.temp_line[20])
+            self.ui_graph.lineEditTemp21.setText(str(self.temp_line[20]))
         if len(self.temp_line) >= 22:
-            self.ui_graph.lineEditTemp22.setText(self.temp_line[21])
+            self.ui_graph.lineEditTemp22.setText(str(self.temp_line[21]))
         if len(self.temp_line) >= 23:
-            self.ui_graph.lineEditTemp23.setText(self.temp_line[22])
+            self.ui_graph.lineEditTemp23.setText(str(self.temp_line[22]))
         if len(self.temp_line) >= 24:
-            self.ui_graph.lineEditTemp24.setText(self.temp_line[23])
+            self.ui_graph.lineEditTemp24.setText(str(self.temp_line[23]))
 
         if len(self.time_line) >= 1:
-            self.ui_graph.lineEditTemp1.setText(self.time_line[0])
+            self.ui_graph.lineEditTime1.setText(str(self.time_line[0]))
         if len(self.time_line) >= 2:
-            self.ui_graph.lineEditTemp2.setText(self.time_line[1])
+            self.ui_graph.lineEditTime2.setText(str(self.time_line[1]))
         if len(self.time_line) >= 3:
-            self.ui_graph.lineEditTemp3.setText(self.time_line[2])
+            self.ui_graph.lineEditTime3.setText(str(self.time_line[2]))
         if len(self.time_line) >= 4:
-            self.ui_graph.lineEditTemp4.setText(self.time_line[3])
+            self.ui_graph.lineEditTime4.setText(str(self.time_line[3]))
         if len(self.time_line) >= 5:
-            self.ui_graph.lineEditTemp5.setText(self.time_line[4])
+            self.ui_graph.lineEditTime5.setText(str(self.time_line[4]))
         if len(self.time_line) >= 6:
-            self.ui_graph.lineEditTemp6.setText(self.time_line[5])
+            self.ui_graph.lineEditTime6.setText(str(self.time_line[5]))
         if len(self.time_line) >= 7:
-            self.ui_graph.lineEditTemp7.setText(self.time_line[6])
+            self.ui_graph.lineEditTime7.setText(str(self.time_line[6]))
         if len(self.time_line) >= 8:
-            self.ui_graph.lineEditTemp8.setText(self.time_line[7])
+            self.ui_graph.lineEditTime8.setText(str(self.time_line[7]))
         if len(self.time_line) >= 9:
-            self.ui_graph.lineEditTemp9.setText(self.time_line[8])
+            self.ui_graph.lineEditTime9.setText(str(self.time_line[8]))
         if len(self.time_line) >= 10:
-            self.ui_graph.lineEditTemp10.setText(self.time_line[9])
+            self.ui_graph.lineEditTime10.setText(str(self.time_line[9]))
         if len(self.time_line) >= 11:
-            self.ui_graph.lineEditTemp11.setText(self.time_line[10])
+            self.ui_graph.lineEditTime11.setText(str(self.time_line[10]))
         if len(self.time_line) >= 12:
-            self.ui_graph.lineEditTemp12.setText(self.time_line[11])
+            self.ui_graph.lineEditTime12.setText(str(self.time_line[11]))
         if len(self.time_line) >= 13:
-            self.ui_graph.lineEditTemp13.setText(self.time_line[12])
+            self.ui_graph.lineEditTime13.setText(str(self.time_line[12]))
         if len(self.time_line) >= 14:
-            self.ui_graph.lineEditTemp14.setText(self.time_line[13])
+            self.ui_graph.lineEditTime14.setText(str(self.time_line[13]))
         if len(self.time_line) >= 15:
-            self.ui_graph.lineEditTemp15.setText(self.time_line[14])
+            self.ui_graph.lineEditTime15.setText(str(self.time_line[14]))
         if len(self.time_line) >= 16:
-            self.ui_graph.lineEditTemp16.setText(self.time_line[15])
+            self.ui_graph.lineEditTime16.setText(str(self.time_line[15]))
         if len(self.time_line) >= 17:
-            self.ui_graph.lineEditTemp17.setText(self.time_line[16])
+            self.ui_graph.lineEditTime17.setText(str(self.time_line[16]))
         if len(self.time_line) >= 18:
-            self.ui_graph.lineEditTemp18.setText(self.time_line[17])
+            self.ui_graph.lineEditTime18.setText(str(self.time_line[17]))
         if len(self.time_line) >= 19:
-            self.ui_graph.lineEditTemp19.setText(self.time_line[18])
+            self.ui_graph.lineEditTime19.setText(str(self.time_line[18]))
         if len(self.time_line) >= 20:
-            self.ui_graph.lineEditTemp20.setText(self.time_line[19])
+            self.ui_graph.lineEditTime20.setText(str(self.time_line[19]))
         if len(self.time_line) >= 21:
-            self.ui_graph.lineEditTemp21.setText(self.time_line[20])
+            self.ui_graph.lineEditTime21.setText(str(self.time_line[20]))
         if len(self.time_line) >= 22:
-            self.ui_graph.lineEditTemp22.setText(self.time_line[21])
+            self.ui_graph.lineEditTime22.setText(str(self.time_line[21]))
         if len(self.time_line) >= 23:
-            self.ui_graph.lineEditTemp23.setText(self.time_line[22])
+            self.ui_graph.lineEditTime23.setText(str(self.time_line[22]))
         if len(self.time_line) >= 24:
-            self.ui_graph.lineEditTemp24.setText(self.time_line[23])
+            self.ui_graph.lineEditTime24.setText(str(self.time_line[23]))
 
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.clear()
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_ylabel('Градусы, °С')
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_xlabel('Время, ч')
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.legend(u'Эталон', loc='lower center')
+        self.ui_graph.MplWidgetGraphEditor.canvas.draw()
 
         self.window_graph.show()
 
@@ -266,7 +275,7 @@ class mywindow(QtWidgets.QMainWindow):
 
 
         if self.ui_graph.lineEditTime1.text():
-            if self.ui_graph.lineEditTemp1.text():
+            if self.ui_graph.lineEditTime1.text():
                 self.temp_line.append(float(self.ui_graph.lineEditTemp1.text()))
                 self.time_line.append(float(self.ui_graph.lineEditTime1.text()))
         if self.ui_graph.lineEditTime2.text():
@@ -370,6 +379,7 @@ class mywindow(QtWidgets.QMainWindow):
             # for graph_text in graph_file:
             #     graph_text.append(graph_file.readline())
             graph_file.write(" ".join(map(str, self.temp_line)))
+            graph_file.write('\n')
             graph_file.write(" ".join(map(str, self.time_line)))
             graph_file.close()
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.clear()
@@ -381,16 +391,6 @@ class mywindow(QtWidgets.QMainWindow):
 
         print(self.temp_line)
         print(self.time_line)
-     #   if self.ui.lineEditTemp1.text():
-  #          print(self.ui.lineEditTemp1.text())
-   #     if self.ui.lineEditTemp2.text():
-  #          print(self.ui.lineEditTemp2.text())
-        # print(self.ui.lineEdit.text())
-        # time_line.append(int(self.ui.lineEditTime1.text()))
-        # with open('graph.cfg', 'r') as graph_file:
-        #     for graph_text in graph_file:
-        #         graph_text.append(graph_file.readline())
-        # print(graph_text)
 
     def update_graph(self):
         fs = 500

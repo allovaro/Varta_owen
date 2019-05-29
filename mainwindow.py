@@ -18,6 +18,9 @@ class mywindow(QtWidgets.QMainWindow):
 
     tray_icon = None
     etalon_temp = None
+    
+    time_line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    temp_line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -73,36 +76,36 @@ class mywindow(QtWidgets.QMainWindow):
 
     def graph_open(self):
         self.window_graph = QtWidgets.QMainWindow()
-        self.ui = Ui_Graph_editor()
-        self.ui.setupUi(self.window_graph)
-        self.ui.MplWidgetGraphEditor.canvas.axes.set_title('Эталон')
-        self.ui.lineEditTemp1.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp2.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp3.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp4.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp5.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp6.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp7.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp8.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp9.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp10.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTemp11.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime1.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime2.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime3.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime4.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime5.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime6.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime7.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime8.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime9.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime10.editingFinished.connect(self.update_etalon_graph)
-        self.ui.lineEditTime11.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph = Ui_Graph_editor()
+        self.ui_graph.setupUi(self.window_graph)
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_title('Эталон')
+        self.ui_graph.lineEditTemp1.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp2.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp3.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp4.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp5.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp6.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp7.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp8.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp9.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp10.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTemp11.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime1.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime2.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime3.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime4.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime5.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime6.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime7.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime8.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime9.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime10.editingFinished.connect(self.update_etalon_graph)
+        self.ui_graph.lineEditTime11.editingFinished.connect(self.update_etalon_graph)
         self.etalon_temp = [100, 200, 300]
         self.etalon_time = [1, 2, 3]
-        self.ui.MplWidgetGraphEditor.canvas.axes.clear()
-        self.ui.MplWidgetGraphEditor.canvas.axes.plot(self.etalon_time, self.etalon_temp)
-        self.ui.MplWidgetGraphEditor.canvas.draw()
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.clear()
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.plot(self.time_line, self.temp_line)
+        self.ui_graph.MplWidgetGraphEditor.canvas.draw()
         self.window_graph.show()
 
     def ports_open(self):
@@ -131,9 +134,64 @@ class mywindow(QtWidgets.QMainWindow):
         # window2 = port_parameters_ui.Ui_Form()
         # window2.show()
     def update_etalon_graph(self):
-        time_line = []
-        temp_line = []
-        print(self.ui.lineEditTime1.text())
+        if self.ui_graph.lineEditTime1.text():
+            self.time_line[0] = self.ui_graph.lineEditTime1.text()
+        if self.ui_graph.lineEditTime2.text():
+            self.time_line[1] = self.ui_graph.lineEditTime2.text()
+        if self.ui_graph.lineEditTime3.text():
+            self.time_line[2] = self.ui_graph.lineEditTime3.text()
+        if self.ui_graph.lineEditTime4.text():
+            self.time_line[3] = self.ui_graph.lineEditTime4.text()
+        if self.ui_graph.lineEditTime5.text():
+            self.time_line[4] = self.ui_graph.lineEditTime5.text()
+        if self.ui_graph.lineEditTime6.text():
+            self.time_line[5] = self.ui_graph.lineEditTime6.text()
+        if self.ui_graph.lineEditTime7.text():
+            self.time_line[6] = self.ui_graph.lineEditTime7.text()
+        if self.ui_graph.lineEditTime8.text():
+            self.time_line[7] = self.ui_graph.lineEditTime8.text()
+        if self.ui_graph.lineEditTime9.text():
+            self.time_line[8] = self.ui_graph.lineEditTime9.text()
+        if self.ui_graph.lineEditTime10.text():
+            self.time_line[9] = self.ui_graph.lineEditTime10.text()
+        if self.ui_graph.lineEditTime11.text():
+            self.time_line[10]= self.ui_graph.lineEditTime11.text()
+        if self.ui_graph.lineEditTemp1.text():
+            self.temp_line[0] = self.ui_graph.lineEditTemp1.text()
+        if self.ui_graph.lineEditTemp2.text():
+            self.temp_line[1] = self.ui_graph.lineEditTemp2.text()
+        if self.ui_graph.lineEditTemp3.text():
+            self.temp_line[2] = self.ui_graph.lineEditTemp3.text()
+        if self.ui_graph.lineEditTemp4.text():
+            self.temp_line[3] = self.ui_graph.lineEditTemp4.text()
+        if self.ui_graph.lineEditTemp5.text():
+            self.temp_line[4] = self.ui_graph.lineEditTemp5.text()
+        if self.ui_graph.lineEditTemp6.text():
+            self.temp_line[5] = self.ui_graph.lineEditTemp6.text()
+        if self.ui_graph.lineEditTemp7.text():
+            self.temp_line[6] = self.ui_graph.lineEditTemp7.text()
+        if self.ui_graph.lineEditTemp8.text():
+            self.temp_line[7] = self.ui_graph.lineEditTemp8.text()
+        if self.ui_graph.lineEditTemp9.text():
+            self.temp_line[8] = self.ui_graph.lineEditTemp9.text()
+        if self.ui_graph.lineEditTemp10.text():
+            self.temp_line[9] = self.ui_graph.lineEditTemp10.text()
+        if self.ui_graph.lineEditTemp11.text():
+            self.temp_line[10] = self.ui_graph.lineEditTemp11.text()
+
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.clear()
+        # self.ui_graph.MplWidgetGraphEditor.canvas.axes.plot(self.temp_line)
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.plot([1, 2, 3, 4], [100, 0, 150, 250], yLabel="Temperature")
+        self.ui_graph.MplWidgetGraphEditor.canvas.axes.grig()
+        self.ui_graph.MplWidgetGraphEditor.canvas.draw()
+
+        
+        print(self.time_line)
+        print(self.temp_line)
+     #   if self.ui.lineEditTemp1.text():
+  #          print(self.ui.lineEditTemp1.text())
+   #     if self.ui.lineEditTemp2.text():
+  #          print(self.ui.lineEditTemp2.text())
         # print(self.ui.lineEdit.text())
         # time_line.append(int(self.ui.lineEditTime1.text()))
         # with open('graph.cfg', 'r') as graph_file:
@@ -153,9 +211,15 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.ui.MplWidget_1.canvas.axes.clear()
         self.ui.MplWidget_1.canvas.axes.plot(t, cosinus_signal)
-        self.ui.MplWidget_1.canvas.axes.plot(t, sinus_signal)
+        self.ui.MplWidget_1.canvas.axes.plot(self.time_line, self.temp_line)
         self.ui.MplWidget_1.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
         self.ui.MplWidget_1.canvas.draw()
+
+        self.ui.MplWidget_2.canvas.axes.clear()
+        self.ui.MplWidget_2.canvas.axes.plot(t, cosinus_signal)
+        self.ui.MplWidget_2.canvas.axes.plot(t, sinus_signal)
+        self.ui.MplWidget_2.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
+        self.ui.MplWidget_2.canvas.draw()
 
 
 def main():

@@ -11,7 +11,6 @@ from serial.tools.list_ports_windows import comports
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
 import random
-# import mplwidget
 
 
 class mywindow(QtWidgets.QMainWindow):
@@ -79,6 +78,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_graph = Ui_Graph_editor()
         self.ui_graph.setupUi(self.window_graph)
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_title('Эталон')
+        self.ui_graph.comboBoxOwen.activated[str].connect(self.change_etalon_graph)
         self.ui_graph.lineEditTemp1.editingFinished.connect(self.update_etalon_graph)
         self.ui_graph.lineEditTemp2.editingFinished.connect(self.update_etalon_graph)
         self.ui_graph.lineEditTemp3.editingFinished.connect(self.update_etalon_graph)
@@ -127,113 +127,26 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_graph.lineEditTime22.editingFinished.connect(self.update_etalon_graph)
         self.ui_graph.lineEditTime23.editingFinished.connect(self.update_etalon_graph)
         self.ui_graph.lineEditTime24.editingFinished.connect(self.update_etalon_graph)
-        with open('graph.cfg', 'r') as fr:
-            line = fr.readline()
-            self.temp_line = line.split()
-            self.temp_line = list(map(float, self.temp_line))
-            line = fr.readline()
-            self.time_line = line.split()
-            self.time_line = list(map(float, self.time_line))
-            fr.close()
-        print('temp_line[0]:')
-        # print(self.temp_line[0])
-        if len(self.temp_line) >= 1:
-            self.ui_graph.lineEditTemp1.setText(str(self.temp_line[0]))
-        if len(self.temp_line) >= 2:
-            self.ui_graph.lineEditTemp2.setText(str(self.temp_line[1]))
-        if len(self.temp_line) >= 3:
-            self.ui_graph.lineEditTemp3.setText(str(self.temp_line[2]))
-        if len(self.temp_line) >= 4:
-            self.ui_graph.lineEditTemp4.setText(str(self.temp_line[3]))
-        if len(self.temp_line) >= 5:
-            self.ui_graph.lineEditTemp5.setText(str(self.temp_line[4]))
-        if len(self.temp_line) >= 6:
-            self.ui_graph.lineEditTemp6.setText(str(self.temp_line[5]))
-        if len(self.temp_line) >= 7:
-            self.ui_graph.lineEditTemp7.setText(str(self.temp_line[6]))
-        if len(self.temp_line) >= 8:
-            self.ui_graph.lineEditTemp8.setText(str(self.temp_line[7]))
-        if len(self.temp_line) >= 9:
-            self.ui_graph.lineEditTemp9.setText(str(self.temp_line[8]))
-        if len(self.temp_line) >= 10:
-            self.ui_graph.lineEditTemp10.setText(str(self.temp_line[9]))
-        if len(self.temp_line) >= 11:
-            self.ui_graph.lineEditTemp11.setText(str(self.temp_line[10]))
-        if len(self.temp_line) >= 12:
-            self.ui_graph.lineEditTemp12.setText(str(self.temp_line[11]))
-        if len(self.temp_line) >= 13:
-            self.ui_graph.lineEditTemp13.setText(str(self.temp_line[12]))
-        if len(self.temp_line) >= 14:
-            self.ui_graph.lineEditTemp14.setText(str(self.temp_line[13]))
-        if len(self.temp_line) >= 15:
-            self.ui_graph.lineEditTemp15.setText(str(self.temp_line[14]))
-        if len(self.temp_line) >= 16:
-            self.ui_graph.lineEditTemp16.setText(str(self.temp_line[15]))
-        if len(self.temp_line) >= 17:
-            self.ui_graph.lineEditTemp17.setText(str(self.temp_line[16]))
-        if len(self.temp_line) >= 18:
-            self.ui_graph.lineEditTemp18.setText(str(self.temp_line[17]))
-        if len(self.temp_line) >= 19:
-            self.ui_graph.lineEditTemp19.setText(str(self.temp_line[18]))
-        if len(self.temp_line) >= 20:
-            self.ui_graph.lineEditTemp20.setText(str(self.temp_line[19]))
-        if len(self.temp_line) >= 21:
-            self.ui_graph.lineEditTemp21.setText(str(self.temp_line[20]))
-        if len(self.temp_line) >= 22:
-            self.ui_graph.lineEditTemp22.setText(str(self.temp_line[21]))
-        if len(self.temp_line) >= 23:
-            self.ui_graph.lineEditTemp23.setText(str(self.temp_line[22]))
-        if len(self.temp_line) >= 24:
-            self.ui_graph.lineEditTemp24.setText(str(self.temp_line[23]))
+        try:
+            with open('graph.cfg', 'r') as fr:
+                lines = fr.readlines()
+                self.temp_line = lines[0].split()
+                self.temp_line = list(map(float, self.temp_line))
+                # line = fr.readline()
+                self.time_line = lines[1].split()
+                self.time_line = list(map(float, self.time_line))
+                fr.close()
+        except FileNotFoundError:
+            print('File graph.cfg not found')
+            with open('graph.cfg', 'w') as fr:
+                for i in range(20):
+                    fr.write('\n')
+                fr.close()
 
-        if len(self.time_line) >= 1:
-            self.ui_graph.lineEditTime1.setText(str(self.time_line[0]))
-        if len(self.time_line) >= 2:
-            self.ui_graph.lineEditTime2.setText(str(self.time_line[1]))
-        if len(self.time_line) >= 3:
-            self.ui_graph.lineEditTime3.setText(str(self.time_line[2]))
-        if len(self.time_line) >= 4:
-            self.ui_graph.lineEditTime4.setText(str(self.time_line[3]))
-        if len(self.time_line) >= 5:
-            self.ui_graph.lineEditTime5.setText(str(self.time_line[4]))
-        if len(self.time_line) >= 6:
-            self.ui_graph.lineEditTime6.setText(str(self.time_line[5]))
-        if len(self.time_line) >= 7:
-            self.ui_graph.lineEditTime7.setText(str(self.time_line[6]))
-        if len(self.time_line) >= 8:
-            self.ui_graph.lineEditTime8.setText(str(self.time_line[7]))
-        if len(self.time_line) >= 9:
-            self.ui_graph.lineEditTime9.setText(str(self.time_line[8]))
-        if len(self.time_line) >= 10:
-            self.ui_graph.lineEditTime10.setText(str(self.time_line[9]))
-        if len(self.time_line) >= 11:
-            self.ui_graph.lineEditTime11.setText(str(self.time_line[10]))
-        if len(self.time_line) >= 12:
-            self.ui_graph.lineEditTime12.setText(str(self.time_line[11]))
-        if len(self.time_line) >= 13:
-            self.ui_graph.lineEditTime13.setText(str(self.time_line[12]))
-        if len(self.time_line) >= 14:
-            self.ui_graph.lineEditTime14.setText(str(self.time_line[13]))
-        if len(self.time_line) >= 15:
-            self.ui_graph.lineEditTime15.setText(str(self.time_line[14]))
-        if len(self.time_line) >= 16:
-            self.ui_graph.lineEditTime16.setText(str(self.time_line[15]))
-        if len(self.time_line) >= 17:
-            self.ui_graph.lineEditTime17.setText(str(self.time_line[16]))
-        if len(self.time_line) >= 18:
-            self.ui_graph.lineEditTime18.setText(str(self.time_line[17]))
-        if len(self.time_line) >= 19:
-            self.ui_graph.lineEditTime19.setText(str(self.time_line[18]))
-        if len(self.time_line) >= 20:
-            self.ui_graph.lineEditTime20.setText(str(self.time_line[19]))
-        if len(self.time_line) >= 21:
-            self.ui_graph.lineEditTime21.setText(str(self.time_line[20]))
-        if len(self.time_line) >= 22:
-            self.ui_graph.lineEditTime22.setText(str(self.time_line[21]))
-        if len(self.time_line) >= 23:
-            self.ui_graph.lineEditTime23.setText(str(self.time_line[22]))
-        if len(self.time_line) >= 24:
-            self.ui_graph.lineEditTime24.setText(str(self.time_line[23]))
+
+        # print('temp_line[0]:')
+        # print(self.temp_line[0])
+        self.update_lines_graph()
 
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.clear()
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
@@ -272,7 +185,6 @@ class mywindow(QtWidgets.QMainWindow):
     def update_etalon_graph(self):
         self.time_line = []
         self.temp_line = []
-
 
         if self.ui_graph.lineEditTime1.text():
             if self.ui_graph.lineEditTime1.text():
@@ -370,18 +282,49 @@ class mywindow(QtWidgets.QMainWindow):
             if self.ui_graph.lineEditTemp24.text():
                 self.temp_line.append(float(self.ui_graph.lineEditTemp24.text()))
                 self.time_line.append(float(self.ui_graph.lineEditTime24.text()))
-        # with open('graph.cfg', 'r') as file:
-        #     line = file.readline()
-        #     line2 = line.split()
-        #     print(line2[1])
-        #     print(line2[0])
+        try:
+            with open('graph.cfg', 'r') as file:
+                lines = file.readlines()
+                lines_len = len(lines)
+        except FileNotFoundError:
+            print('File graph.cfg not found')
+
         with open('graph.cfg', 'w') as graph_file:
-            # for graph_text in graph_file:
-            #     graph_text.append(graph_file.readline())
-            graph_file.write(" ".join(map(str, self.temp_line)))
-            graph_file.write('\n')
-            graph_file.write(" ".join(map(str, self.time_line)))
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 1':
+                lines[0] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[1] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 2':
+                lines[2] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[3] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 3':
+                lines[4] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[5] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 4':
+                lines[6] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[7] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 5':
+                lines[8] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[9] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 6':
+                lines[10] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[11] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 7':
+                lines[12] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[13] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 8':
+                lines[14] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[15] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 9':
+                lines[16] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[17] = " ".join(map(str, self.time_line)) + '\n'
+            if self.ui_graph.comboBoxOwen.currentText() == 'Печь 10':
+                lines[18] = " ".join(map(str, self.temp_line)) + '\n'
+                lines[19] = " ".join(map(str, self.time_line)) + '\n'
+            graph_file.writelines(lines)
             graph_file.close()
+        self.update_etalon_draw()
+
+    def update_etalon_draw(self):
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.clear()
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_ylabel('Градусы, °С')
@@ -389,8 +332,332 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.legend(u'Эталон', loc='lower center')
         self.ui_graph.MplWidgetGraphEditor.canvas.draw()
 
-        print(self.temp_line)
-        print(self.time_line)
+    def change_etalon_graph(self, text):
+        if text == 'Печь 1':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[0].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[1].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 2':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[2].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[3].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 3':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[4].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[5].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 4':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[6].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[7].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 5':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[8].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[9].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 6':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[10].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[11].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 7':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[12].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[13].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 8':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[14].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[15].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 9':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[16].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[17].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+        if text == 'Печь 10':
+            try:
+                with open('graph.cfg', 'r') as fr:
+                    lines = fr.readlines()
+                    self.temp_line = lines[18].split()
+                    self.temp_line = list(map(float, self.temp_line))
+                    self.time_line = lines[19].split()
+                    self.time_line = list(map(float, self.time_line))
+                    fr.close()
+            except FileNotFoundError:
+                print('File graph.cfg not found')
+            self.update_lines_graph()
+            self.update_etalon_draw()
+
+    def update_lines_graph(self):
+        if len(self.temp_line) >= 1:
+            self.ui_graph.lineEditTemp1.setText(str(self.temp_line[0]))
+        else:
+            self.ui_graph.lineEditTemp1.setText('')
+        if len(self.temp_line) >= 2:
+            self.ui_graph.lineEditTemp2.setText(str(self.temp_line[1]))
+        else:
+            self.ui_graph.lineEditTemp2.setText('')
+        if len(self.temp_line) >= 3:
+            self.ui_graph.lineEditTemp3.setText(str(self.temp_line[2]))
+        else:
+            self.ui_graph.lineEditTemp3.setText('')
+        if len(self.temp_line) >= 4:
+            self.ui_graph.lineEditTemp4.setText(str(self.temp_line[3]))
+        else:
+            self.ui_graph.lineEditTemp4.setText('')
+        if len(self.temp_line) >= 5:
+            self.ui_graph.lineEditTemp5.setText(str(self.temp_line[4]))
+        else:
+            self.ui_graph.lineEditTemp5.setText('')
+        if len(self.temp_line) >= 6:
+            self.ui_graph.lineEditTemp6.setText(str(self.temp_line[5]))
+        else:
+            self.ui_graph.lineEditTemp6.setText('')
+        if len(self.temp_line) >= 7:
+            self.ui_graph.lineEditTemp7.setText(str(self.temp_line[6]))
+        else:
+            self.ui_graph.lineEditTemp7.setText('')
+        if len(self.temp_line) >= 8:
+            self.ui_graph.lineEditTemp8.setText(str(self.temp_line[7]))
+        else:
+            self.ui_graph.lineEditTemp8.setText('')
+        if len(self.temp_line) >= 9:
+            self.ui_graph.lineEditTemp9.setText(str(self.temp_line[8]))
+        else:
+            self.ui_graph.lineEditTemp9.setText('')
+        if len(self.temp_line) >= 10:
+            self.ui_graph.lineEditTemp10.setText(str(self.temp_line[9]))
+        else:
+            self.ui_graph.lineEditTemp10.setText('')
+        if len(self.temp_line) >= 11:
+            self.ui_graph.lineEditTemp11.setText(str(self.temp_line[10]))
+        else:
+            self.ui_graph.lineEditTemp11.setText('')
+        if len(self.temp_line) >= 12:
+            self.ui_graph.lineEditTemp12.setText(str(self.temp_line[11]))
+        else:
+            self.ui_graph.lineEditTemp12.setText('')
+        if len(self.temp_line) >= 13:
+            self.ui_graph.lineEditTemp13.setText(str(self.temp_line[12]))
+        else:
+            self.ui_graph.lineEditTemp13.setText('')
+        if len(self.temp_line) >= 14:
+            self.ui_graph.lineEditTemp14.setText(str(self.temp_line[13]))
+        else:
+            self.ui_graph.lineEditTemp14.setText('')
+        if len(self.temp_line) >= 15:
+            self.ui_graph.lineEditTemp15.setText(str(self.temp_line[14]))
+        else:
+            self.ui_graph.lineEditTemp15.setText('')
+        if len(self.temp_line) >= 16:
+            self.ui_graph.lineEditTemp16.setText(str(self.temp_line[15]))
+        else:
+            self.ui_graph.lineEditTemp16.setText('')
+        if len(self.temp_line) >= 17:
+            self.ui_graph.lineEditTemp17.setText(str(self.temp_line[16]))
+        else:
+            self.ui_graph.lineEditTemp17.setText('')
+        if len(self.temp_line) >= 18:
+            self.ui_graph.lineEditTemp18.setText(str(self.temp_line[17]))
+        else:
+            self.ui_graph.lineEditTemp18.setText('')
+        if len(self.temp_line) >= 19:
+            self.ui_graph.lineEditTemp19.setText(str(self.temp_line[18]))
+        else:
+            self.ui_graph.lineEditTemp19.setText('')
+        if len(self.temp_line) >= 20:
+            self.ui_graph.lineEditTemp20.setText(str(self.temp_line[19]))
+        else:
+            self.ui_graph.lineEditTemp20.setText('')
+        if len(self.temp_line) >= 21:
+            self.ui_graph.lineEditTemp21.setText(str(self.temp_line[20]))
+        else:
+            self.ui_graph.lineEditTemp21.setText('')
+        if len(self.temp_line) >= 22:
+            self.ui_graph.lineEditTemp22.setText(str(self.temp_line[21]))
+        else:
+            self.ui_graph.lineEditTemp22.setText('')
+        if len(self.temp_line) >= 23:
+            self.ui_graph.lineEditTemp23.setText(str(self.temp_line[22]))
+        else:
+            self.ui_graph.lineEditTemp23.setText('')
+        if len(self.temp_line) >= 24:
+            self.ui_graph.lineEditTemp24.setText(str(self.temp_line[23]))
+        else:
+            self.ui_graph.lineEditTemp24.setText('')
+
+        if len(self.time_line) >= 1:
+            self.ui_graph.lineEditTime1.setText(str(self.time_line[0]))
+        else:
+            self.ui_graph.lineEditTime1.setText('')
+        if len(self.time_line) >= 2:
+            self.ui_graph.lineEditTime2.setText(str(self.time_line[1]))
+        else:
+            self.ui_graph.lineEditTime2.setText('')
+        if len(self.time_line) >= 3:
+            self.ui_graph.lineEditTime3.setText(str(self.time_line[2]))
+        else:
+            self.ui_graph.lineEditTime3.setText('')
+        if len(self.time_line) >= 4:
+            self.ui_graph.lineEditTime4.setText(str(self.time_line[3]))
+        else:
+            self.ui_graph.lineEditTime4.setText('')
+        if len(self.time_line) >= 5:
+            self.ui_graph.lineEditTime5.setText(str(self.time_line[4]))
+        else:
+            self.ui_graph.lineEditTime5.setText('')
+        if len(self.time_line) >= 6:
+            self.ui_graph.lineEditTime6.setText(str(self.time_line[5]))
+        else:
+            self.ui_graph.lineEditTime6.setText('')
+        if len(self.time_line) >= 7:
+            self.ui_graph.lineEditTime7.setText(str(self.time_line[6]))
+        else:
+            self.ui_graph.lineEditTime7.setText('')
+        if len(self.time_line) >= 8:
+            self.ui_graph.lineEditTime8.setText(str(self.time_line[7]))
+        else:
+            self.ui_graph.lineEditTime8.setText('')
+        if len(self.time_line) >= 9:
+            self.ui_graph.lineEditTime9.setText(str(self.time_line[8]))
+        else:
+            self.ui_graph.lineEditTime9.setText('')
+        if len(self.time_line) >= 10:
+            self.ui_graph.lineEditTime10.setText(str(self.time_line[9]))
+        else:
+            self.ui_graph.lineEditTime10.setText('')
+        if len(self.time_line) >= 11:
+            self.ui_graph.lineEditTime11.setText(str(self.time_line[10]))
+        else:
+            self.ui_graph.lineEditTime11.setText('')
+        if len(self.time_line) >= 12:
+            self.ui_graph.lineEditTime12.setText(str(self.time_line[11]))
+        else:
+            self.ui_graph.lineEditTime12.setText('')
+        if len(self.time_line) >= 13:
+            self.ui_graph.lineEditTime13.setText(str(self.time_line[12]))
+        else:
+            self.ui_graph.lineEditTime13.setText('')
+        if len(self.time_line) >= 14:
+            self.ui_graph.lineEditTime14.setText(str(self.time_line[13]))
+        else:
+            self.ui_graph.lineEditTime14.setText('')
+        if len(self.time_line) >= 15:
+            self.ui_graph.lineEditTime15.setText(str(self.time_line[14]))
+        else:
+            self.ui_graph.lineEditTime15.setText('')
+        if len(self.time_line) >= 16:
+            self.ui_graph.lineEditTime16.setText(str(self.time_line[15]))
+        else:
+            self.ui_graph.lineEditTime16.setText('')
+        if len(self.time_line) >= 17:
+            self.ui_graph.lineEditTime17.setText(str(self.time_line[16]))
+        else:
+            self.ui_graph.lineEditTime17.setText('')
+        if len(self.time_line) >= 18:
+            self.ui_graph.lineEditTime18.setText(str(self.time_line[17]))
+        else:
+            self.ui_graph.lineEditTime18.setText('')
+        if len(self.time_line) >= 19:
+            self.ui_graph.lineEditTime19.setText(str(self.time_line[18]))
+        else:
+            self.ui_graph.lineEditTime19.setText('')
+        if len(self.time_line) >= 20:
+            self.ui_graph.lineEditTime20.setText(str(self.time_line[19]))
+        else:
+            self.ui_graph.lineEditTime21.setText('')
+        if len(self.time_line) >= 21:
+            self.ui_graph.lineEditTime21.setText(str(self.time_line[20]))
+        else:
+            self.ui_graph.lineEditTime21.setText('')
+        if len(self.time_line) >= 22:
+            self.ui_graph.lineEditTime22.setText(str(self.time_line[21]))
+        else:
+            self.ui_graph.lineEditTime22.setText('')
+        if len(self.time_line) >= 23:
+            self.ui_graph.lineEditTime23.setText(str(self.time_line[22]))
+        else:
+            self.ui_graph.lineEditTime23.setText('')
+        if len(self.time_line) >= 24:
+            self.ui_graph.lineEditTime24.setText(str(self.time_line[23]))
+        else:
+            self.ui_graph.lineEditTime24.setText('')
 
     def update_graph(self):
         fs = 500
@@ -401,10 +668,6 @@ class mywindow(QtWidgets.QMainWindow):
 
         cosinus_signal = np.cos(2 * np.pi * f * t)
         sinus_signal = np.sin(2 * np.pi * f * t)
-        # print('t')
-        # print(t)
-        # print('cosinus')
-        # print(cosinus_signal)
         self.ui.MplWidget_1.canvas.axes.clear()
         self.ui.MplWidget_1.canvas.axes.plot(t, cosinus_signal)
         self.ui.MplWidget_1.canvas.axes.plot([1, 2, 3], [1, 2, 1])

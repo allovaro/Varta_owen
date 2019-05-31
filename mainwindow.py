@@ -14,7 +14,6 @@ import random
 
 
 class mywindow(QtWidgets.QMainWindow):
-
     tray_icon = None
     etalon_temp = None
     
@@ -142,19 +141,8 @@ class mywindow(QtWidgets.QMainWindow):
                 for i in range(20):
                     fr.write('\n')
                 fr.close()
-
-
-        # print('temp_line[0]:')
-        # print(self.temp_line[0])
         self.update_lines_graph()
-
-        self.ui_graph.MplWidgetGraphEditor.canvas.axes.clear()
-        self.ui_graph.MplWidgetGraphEditor.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
-        self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_ylabel('Градусы, °С')
-        self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_xlabel('Время, ч')
-        self.ui_graph.MplWidgetGraphEditor.canvas.axes.legend(u'Эталон', loc='lower center')
-        self.ui_graph.MplWidgetGraphEditor.canvas.draw()
-
+        self.update_etalon_draw()
         self.window_graph.show()
 
     def ports_open(self):
@@ -165,11 +153,26 @@ class mywindow(QtWidgets.QMainWindow):
             self.ui_ports.port_Name_comboBox.addItem(str(dev).split()[0])
         self.ui_ports.port_Name_comboBox.editTextChanged.connect(self.port_name_changed)
         self.window_ports.show()
+        try:
+            with open('port_configuration.cfg', 'r') as fr:
+                lines = fr.readlines()
+                self.temp_line = lines[0].split()
+                self.temp_line = list(map(float, self.temp_line))
+                # line = fr.readline()
+                self.time_line = lines[1].split()
+                self.time_line = list(map(float, self.time_line))
+                fr.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+            with open('port_configuration.cfg', 'w') as fr:
+                for i in range(50):
+                    fr.write('\n')
+                fr.close()
 
     def port_name_changed(self):
-        print('1111')
-        # print(self.ui_ports.port_Name_comboBox.currentText())
-
+        # print('1111')
+        print(self.ui_ports.port_Name_comboBox.currentText())
+        print(self.ui_ports.owenName_comboBox.currentText())
         # ser = serial.Serial()  # open serial port
         # ser.baudrate = 9600
         # ser.stopbits = 1

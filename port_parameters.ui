@@ -30,7 +30,7 @@
     <activeoff>lines.png</activeoff>
    </iconset>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -132,7 +132,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QComboBox" name="comboBox_6">
+       <widget class="QComboBox" name="owenName_comboBox">
         <item>
          <property name="text">
           <string>Печь 1</string>
@@ -189,7 +189,7 @@
        <widget class="QComboBox" name="port_Name_comboBox"/>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="speed_comboBox">
         <item>
          <property name="text">
           <string>1200</string>
@@ -243,7 +243,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_3">
+       <widget class="QComboBox" name="parity_comboBox">
         <item>
          <property name="text">
           <string>Нет</string>
@@ -262,7 +262,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_4">
+       <widget class="QComboBox" name="bits_comboBox">
         <item>
          <property name="text">
           <string>7</string>
@@ -276,7 +276,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_5">
+       <widget class="QComboBox" name="stop_bits_comboBox">
         <item>
          <property name="text">
           <string>1</string>

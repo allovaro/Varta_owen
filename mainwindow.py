@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
@@ -19,6 +20,7 @@ class mywindow(QtWidgets.QMainWindow):
     
     time_line = []
     temp_line = []
+    port_lines = []
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -151,16 +153,16 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_ports.setupUi(self.window_ports)
         for dev in comports():
             self.ui_ports.port_Name_comboBox.addItem(str(dev).split()[0])
-        self.ui_ports.port_Name_comboBox.editTextChanged.connect(self.port_name_changed)
+        self.ui_ports.owenName_comboBox.currentIndexChanged.connect(self.update_port_settings)
+        self.ui_ports.port_Name_comboBox.currentIndexChanged.connect(self.update_port_Name_settings)
+        self.ui_ports.speed_comboBox.currentIndexChanged.connect(self.update_speed_settings)
+        self.ui_ports.parity_comboBox.currentIndexChanged.connect(self.update_parity_settings)
+        self.ui_ports.bits_comboBox.currentIndexChanged.connect(self.update_bits_settings)
+        self.ui_ports.stop_bits_comboBox.currentIndexChanged.connect(self.update_stop_bits_settings)
         self.window_ports.show()
         try:
             with open('port_configuration.cfg', 'r') as fr:
-                lines = fr.readlines()
-                self.temp_line = lines[0].split()
-                self.temp_line = list(map(float, self.temp_line))
-                # line = fr.readline()
-                self.time_line = lines[1].split()
-                self.time_line = list(map(float, self.time_line))
+                self.port_lines = fr.readlines()
                 fr.close()
         except FileNotFoundError:
             print('File port_configuration.cfg not found')
@@ -169,10 +171,46 @@ class mywindow(QtWidgets.QMainWindow):
                     fr.write('\n')
                 fr.close()
 
-    def port_name_changed(self):
-        # print('1111')
-        print(self.ui_ports.port_Name_comboBox.currentText())
-        print(self.ui_ports.owenName_comboBox.currentText())
+    def update_port_settings(self, index):
+        # print(index)
+        # print(self.ui_ports.port_Name_comboBox.currentText())
+        # print(self.ui_ports.owenName_comboBox.currentText())
+        try:
+            with open('port_configuration.cfg', 'r') as fr:
+                self.port_lines = fr.readlines()
+                port_ind = self.ui_ports.port_Name_comboBox.findText(self.port_lines[index * 5][:-1],
+                                                                     QtCore.Qt.MatchFixedString)
+                if port_ind > 0:
+                    self.ui_ports.port_Name_comboBox.setCurrentIndex(port_ind)
+
+                speed_ind = self.ui_ports.speed_comboBox.findText(self.port_lines[index * 5 + 1][:-1],
+                                                                  QtCore.Qt.MatchFixedString)
+                if speed_ind > 0:
+                    self.ui_ports.speed_comboBox.setCurrentIndex(speed_ind)
+
+                parity_ind = self.ui_ports.parity_comboBox.findText(self.port_lines[index * 5 + 2][:-1],
+                                                                  QtCore.Qt.MatchFixedString)
+                if parity_ind > 0:
+                    self.ui_ports.parity_comboBox.setCurrentIndex(parity_ind)
+
+                bits_ind = self.ui_ports.bits_comboBox.findText(self.port_lines[index * 5 + 3][:-1],
+                                                                    QtCore.Qt.MatchFixedString)
+                if bits_ind > 0:
+                    self.ui_ports.bits_comboBox.setCurrentIndex(bits_ind)
+                print(bits_ind)
+                stop_bits_ind = self.ui_ports.stop_bits_comboBox.findText(self.port_lines[index * 5 + 4][:-1],
+                                                                  QtCore.Qt.MatchFixedString)
+                if stop_bits_ind > 0:
+                    self.ui_ports.stop_bits_comboBox.setCurrentIndex(stop_bits_ind)
+                fr.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        # try:
+        #     with open('port_configuration.cfg', 'r') as fr:
+        #         lines = fr.readlines()
+        #         self.time_line = lines[1].split()
+        #         self.time_line = list(map(float, self.time_line))
+        #         fr.close()
         # ser = serial.Serial()  # open serial port
         # ser.baudrate = 9600
         # ser.stopbits = 1
@@ -185,6 +223,87 @@ class mywindow(QtWidgets.QMainWindow):
         # if window2 is None:
         # window2 = port_parameters_ui.Ui_Form()
         # window2.show()
+    def update_port_Name_settings(self, index):
+        owen_index = self.ui_ports.owenName_comboBox.currentIndex()
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                self.port_lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        try:
+            with open('port_configuration.cfg', 'w') as f:
+                self.port_lines[owen_index * 5] = self.ui_ports.port_Name_comboBox.currentText() + '\n'
+                f.writelines(self.port_lines)
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+
+
+    def update_speed_settings(self, index):
+        owen_index = self.ui_ports.owenName_comboBox.currentIndex()
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                self.port_lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        try:
+            with open('port_configuration.cfg', 'w') as f:
+                self.port_lines[owen_index * 5 + 1] = str(self.ui_ports.speed_comboBox.currentText()) + '\n'
+                f.writelines(self.port_lines)
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+
+    def update_parity_settings(self, index):
+        owen_index = self.ui_ports.owenName_comboBox.currentIndex()
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                self.port_lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        try:
+            with open('port_configuration.cfg', 'w') as f:
+                self.port_lines[owen_index * 5 + 2] = str(self.ui_ports.parity_comboBox.currentText()) + '\n'
+                f.writelines(self.port_lines)
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+
+    def update_bits_settings(self, index):
+        owen_index = self.ui_ports.owenName_comboBox.currentIndex()
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                self.port_lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        try:
+            with open('port_configuration.cfg', 'w') as f:
+                self.port_lines[owen_index * 5 + 3] = str(self.ui_ports.bits_comboBox.currentText()) + '\n'
+                f.writelines(self.port_lines)
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+
+    def update_stop_bits_settings(self, index):
+        owen_index = self.ui_ports.owenName_comboBox.currentIndex()
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                self.port_lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        try:
+            with open('port_configuration.cfg', 'w') as f:
+                self.port_lines[owen_index * 5 + 4] = str(self.ui_ports.stop_bits_comboBox.currentText()) + '\n'
+                f.writelines(self.port_lines)
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+
     def update_etalon_graph(self):
         self.time_line = []
         self.temp_line = []

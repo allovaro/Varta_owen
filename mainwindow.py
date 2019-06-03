@@ -17,7 +17,7 @@ import random
 class mywindow(QtWidgets.QMainWindow):
     tray_icon = None
     etalon_temp = None
-    
+    prev_tab_index = 0
     time_line = []
     temp_line = []
     port_lines = []
@@ -32,22 +32,48 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.ports.triggered.connect(self.ports_open)
         self.ui.graph.triggered.connect(self.graph_open)
 
+        self.plots = [self.ui.MplWidget_1,
+                      self.ui.MplWidget_2,
+                      self.ui.MplWidget_3,
+                      self.ui.MplWidget_4,
+                      self.ui.MplWidget_5,
+                      self.ui.MplWidget_6,
+                      self.ui.MplWidget_7,
+                      self.ui.MplWidget_8,
+                      self.ui.MplWidget_9,
+                      self.ui.MplWidget_10]
         # Настройка графиков
-        self.ui.MplWidget_1.canvas.axes.set_title('Печь №1')
-        self.ui.MplWidget_2.canvas.axes.set_title('Печь №2')
-        self.ui.MplWidget_3.canvas.axes.set_title('Печь №3')
-        self.ui.MplWidget_4.canvas.axes.set_title('Печь №4')
-        self.ui.MplWidget_5.canvas.axes.set_title('Печь №5')
-        self.ui.MplWidget_6.canvas.axes.set_title('Печь №6')
-        self.ui.MplWidget_7.canvas.axes.set_title('Печь №7')
-        self.ui.MplWidget_8.canvas.axes.set_title('Печь №8')
-        self.ui.MplWidget_9.canvas.axes.set_title('Печь №9')
-        self.ui.MplWidget_10.canvas.axes.set_title('Печь №10')
+        self.plots[0].canvas.axes.set_title('Печь №1')
+        self.plots[1].canvas.axes.set_title('Печь №2')
+        self.plots[2].canvas.axes.set_title('Печь №3')
+        self.plots[3].canvas.axes.set_title('Печь №4')
+        self.plots[4].canvas.axes.set_title('Печь №5')
+        self.plots[5].canvas.axes.set_title('Печь №6')
+        self.plots[6].canvas.axes.set_title('Печь №7')
+        self.plots[7].canvas.axes.set_title('Печь №8')
+        self.plots[8].canvas.axes.set_title('Печь №9')
+        self.plots[9].canvas.axes.set_title('Печь №10')
 
+        # Инициализация навигационных баров для графиков
+        self.plotNavs = [NavigationToolbar(self.plots[0].canvas, self),
+                         NavigationToolbar(self.plots[1].canvas, self),
+                         NavigationToolbar(self.plots[2].canvas, self),
+                         NavigationToolbar(self.plots[3].canvas, self),
+                         NavigationToolbar(self.plots[4].canvas, self),
+                         NavigationToolbar(self.plots[5].canvas, self),
+                         NavigationToolbar(self.plots[6].canvas, self),
+                         NavigationToolbar(self.plots[7].canvas, self),
+                         NavigationToolbar(self.plots[8].canvas, self),
+                         NavigationToolbar(self.plots[9].canvas, self)]
+        for navBar in self.plotNavs:
+            self.addToolBar(QtCore.Qt.BottomToolBarArea, navBar)
+            navBar.toggleViewAction().trigger()
+            navBar.toggleViewAction().trigger()
+        self.plotNavs[0].toggleViewAction().trigger()
+        self.ui.tabWidget.currentChanged.connect(self.tab_changed)
         self.update_graph()
 
         # Инициализируем QSystemTrayIcon
-
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QtGui.QIcon('lines.png'))
         # self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
@@ -63,6 +89,15 @@ class mywindow(QtWidgets.QMainWindow):
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
+
+    def tab_changed(self, index):
+        # Показ навбара для текущей вкладки и скрытие от предыдущей
+        self.plotNavs[self.prev_tab_index].toggleViewAction().trigger()
+        self.plotNavs[index].toggleViewAction().trigger()
+        self.prev_tab_index = index
+
+        # Обновление эталонного графика для текущей вкладки
+        self.update_tab_graph1(index)
 
     def closeEvent(self, event):
         event.ignore()
@@ -148,6 +183,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_graph.show()
 
     def ports_open(self):
+        self.plotNavBar.toggleViewAction().trigger()
         self.window_ports = QtWidgets.QMainWindow()
         self.ui_ports = Ui_Form()
         self.ui_ports.setupUi(self.window_ports)
@@ -164,6 +200,7 @@ class mywindow(QtWidgets.QMainWindow):
             with open('port_configuration.cfg', 'r') as fr:
                 self.port_lines = fr.readlines()
                 fr.close()
+                self.update_port_settings(0)
         except FileNotFoundError:
             print('File port_configuration.cfg not found')
             with open('port_configuration.cfg', 'w') as fr:
@@ -172,45 +209,37 @@ class mywindow(QtWidgets.QMainWindow):
                 fr.close()
 
     def update_port_settings(self, index):
-        # print(index)
-        # print(self.ui_ports.port_Name_comboBox.currentText())
-        # print(self.ui_ports.owenName_comboBox.currentText())
         try:
+
             with open('port_configuration.cfg', 'r') as fr:
                 self.port_lines = fr.readlines()
                 port_ind = self.ui_ports.port_Name_comboBox.findText(self.port_lines[index * 5][:-1],
                                                                      QtCore.Qt.MatchFixedString)
-                if port_ind > 0:
+                if port_ind >= 0:
                     self.ui_ports.port_Name_comboBox.setCurrentIndex(port_ind)
 
                 speed_ind = self.ui_ports.speed_comboBox.findText(self.port_lines[index * 5 + 1][:-1],
                                                                   QtCore.Qt.MatchFixedString)
-                if speed_ind > 0:
+                if speed_ind >= 0:
                     self.ui_ports.speed_comboBox.setCurrentIndex(speed_ind)
-
+                # --------------------------------------------------
                 parity_ind = self.ui_ports.parity_comboBox.findText(self.port_lines[index * 5 + 2][:-1],
                                                                   QtCore.Qt.MatchFixedString)
-                if parity_ind > 0:
+                if parity_ind >= 0:
                     self.ui_ports.parity_comboBox.setCurrentIndex(parity_ind)
-
+                # --------------------------------------------------
                 bits_ind = self.ui_ports.bits_comboBox.findText(self.port_lines[index * 5 + 3][:-1],
                                                                     QtCore.Qt.MatchFixedString)
-                if bits_ind > 0:
+                if bits_ind >= 0:
                     self.ui_ports.bits_comboBox.setCurrentIndex(bits_ind)
-                print(bits_ind)
+                # --------------------------------------------------
                 stop_bits_ind = self.ui_ports.stop_bits_comboBox.findText(self.port_lines[index * 5 + 4][:-1],
                                                                   QtCore.Qt.MatchFixedString)
-                if stop_bits_ind > 0:
+                if stop_bits_ind >= 0:
                     self.ui_ports.stop_bits_comboBox.setCurrentIndex(stop_bits_ind)
                 fr.close()
         except FileNotFoundError:
             print('File port_configuration.cfg not found')
-        # try:
-        #     with open('port_configuration.cfg', 'r') as fr:
-        #         lines = fr.readlines()
-        #         self.time_line = lines[1].split()
-        #         self.time_line = list(map(float, self.time_line))
-        #         fr.close()
         # ser = serial.Serial()  # open serial port
         # ser.baudrate = 9600
         # ser.stopbits = 1
@@ -223,6 +252,7 @@ class mywindow(QtWidgets.QMainWindow):
         # if window2 is None:
         # window2 = port_parameters_ui.Ui_Form()
         # window2.show()
+
     def update_port_Name_settings(self, index):
         owen_index = self.ui_ports.owenName_comboBox.currentIndex()
         try:
@@ -238,7 +268,6 @@ class mywindow(QtWidgets.QMainWindow):
                 f.close()
         except FileNotFoundError:
             print('File port_configuration.cfg not found')
-
 
     def update_speed_settings(self, index):
         owen_index = self.ui_ports.owenName_comboBox.currentIndex()
@@ -792,7 +821,6 @@ class mywindow(QtWidgets.QMainWindow):
         sinus_signal = np.sin(2 * np.pi * f * t)
         self.ui.MplWidget_1.canvas.axes.clear()
         self.ui.MplWidget_1.canvas.axes.plot(t, cosinus_signal)
-        self.ui.MplWidget_1.canvas.axes.plot([1, 2, 3], [1, 2, 1])
         self.ui.MplWidget_1.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
         self.ui.MplWidget_1.canvas.draw()
 
@@ -802,12 +830,29 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.MplWidget_2.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
         self.ui.MplWidget_2.canvas.draw()
 
+    def update_tab_graph1(self, index):
+        # Считываем значения из файла 'graph.cfg'
+        try:
+            with open('graph.cfg', 'r') as fr:
+                lines = fr.readlines()
+                self.temp_line_current_tab = lines[index * 2].split()
+                self.temp_line_current_tab = list(map(float, self.temp_line_current_tab))
+                # line = fr.readline()
+                self.time_line_current_tab = lines[index * 2 + 1].split()
+                self.time_line_current_tab = list(map(float, self.time_line_current_tab))
+                fr.close()
+        except FileNotFoundError:
+            print('File graph.cfg not found')
+        self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
+        self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
+        self.plots[index].canvas.draw()
+
+
 
 def main():
     app = QtWidgets.QApplication([])  # Новый экземпляр QApplication
     application = mywindow()  # Создаём объект класса mywindow
     application.show()  # Показываем окно
-
     sys.exit(app.exec())  # и запускаем приложение
 
 

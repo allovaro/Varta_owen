@@ -42,17 +42,6 @@ class mywindow(QtWidgets.QMainWindow):
                       self.ui.MplWidget_8,
                       self.ui.MplWidget_9,
                       self.ui.MplWidget_10]
-        # Настройка графиков
-        self.plots[0].canvas.axes.set_title('Печь №1')
-        self.plots[1].canvas.axes.set_title('Печь №2')
-        self.plots[2].canvas.axes.set_title('Печь №3')
-        self.plots[3].canvas.axes.set_title('Печь №4')
-        self.plots[4].canvas.axes.set_title('Печь №5')
-        self.plots[5].canvas.axes.set_title('Печь №6')
-        self.plots[6].canvas.axes.set_title('Печь №7')
-        self.plots[7].canvas.axes.set_title('Печь №8')
-        self.plots[8].canvas.axes.set_title('Печь №9')
-        self.plots[9].canvas.axes.set_title('Печь №10')
 
         # Инициализация навигационных баров для графиков
         self.plotNavs = [NavigationToolbar(self.plots[0].canvas, self),
@@ -71,12 +60,11 @@ class mywindow(QtWidgets.QMainWindow):
             navBar.toggleViewAction().trigger()
         self.plotNavs[0].toggleViewAction().trigger()
         self.ui.tabWidget.currentChanged.connect(self.tab_changed)
-        self.update_graph()
+        self.update_tab_graph(0)
 
         # Инициализируем QSystemTrayIcon
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QtGui.QIcon('lines.png'))
-        # self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
         show_action = QAction("Показать", self)
         quit_action = QAction("Выход", self)
         hide_action = QAction("Спрятать", self)
@@ -97,7 +85,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.prev_tab_index = index
 
         # Обновление эталонного графика для текущей вкладки
-        self.update_tab_graph1(index)
+        self.update_tab_graph(index)
 
     def closeEvent(self, event):
         event.ignore()
@@ -183,7 +171,6 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_graph.show()
 
     def ports_open(self):
-        self.plotNavBar.toggleViewAction().trigger()
         self.window_ports = QtWidgets.QMainWindow()
         self.ui_ports = Ui_Form()
         self.ui_ports.setupUi(self.window_ports)
@@ -210,7 +197,6 @@ class mywindow(QtWidgets.QMainWindow):
 
     def update_port_settings(self, index):
         try:
-
             with open('port_configuration.cfg', 'r') as fr:
                 self.port_lines = fr.readlines()
                 port_ind = self.ui_ports.port_Name_comboBox.findText(self.port_lines[index * 5][:-1],
@@ -830,7 +816,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.MplWidget_2.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
         self.ui.MplWidget_2.canvas.draw()
 
-    def update_tab_graph1(self, index):
+    def update_tab_graph(self, index):
         # Считываем значения из файла 'graph.cfg'
         try:
             with open('graph.cfg', 'r') as fr:
@@ -843,9 +829,11 @@ class mywindow(QtWidgets.QMainWindow):
                 fr.close()
         except FileNotFoundError:
             print('File graph.cfg not found')
+        self.plots[index].canvas.axes.clear()
+        self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
-        self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
-        self.plots[index].canvas.draw()
+        self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper left')
+        self.plots[index].canvas.axes.grid()
 
 
 

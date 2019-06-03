@@ -21,6 +21,8 @@ class mywindow(QtWidgets.QMainWindow):
     time_line = []
     temp_line = []
     port_lines = []
+    time_line_current_tab = []
+    temp_line_current_tab = []
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -823,12 +825,12 @@ class mywindow(QtWidgets.QMainWindow):
                 lines = fr.readlines()
                 self.temp_line_current_tab = lines[index * 2].split()
                 self.temp_line_current_tab = list(map(float, self.temp_line_current_tab))
-                # line = fr.readline()
                 self.time_line_current_tab = lines[index * 2 + 1].split()
                 self.time_line_current_tab = list(map(float, self.time_line_current_tab))
                 fr.close()
         except FileNotFoundError:
             print('File graph.cfg not found')
+        print(self.time_line_current_tab)
         self.plots[index].canvas.axes.clear()
         self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)

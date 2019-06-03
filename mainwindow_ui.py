@@ -154,7 +154,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_8), _translate("MainWindow", "Печь 8"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_9), _translate("MainWindow", "Печь 9"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_10), _translate("MainWindow", "Печь 10"))
-        self.Parameters.setTitle(_translate("MainWindow", "Настройки"))
+        self.Parameters.setTitle(_translate("MainWindow", "Меню"))
         self.Help.setTitle(_translate("MainWindow", "Помощь"))
         self.ports.setText(_translate("MainWindow", "Порты"))
         self.ports.setShortcut(_translate("MainWindow", "Ctrl+Shift+P"))

@@ -836,7 +836,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
         self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
-
+        self.plots[index].canvas.draw()
 
 
 def main():

@@ -1,13 +1,16 @@
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
 from graph_ui import Ui_Graph_editor
 import sys
+import time
 import serial
 from serial.tools.list_ports_windows import comports
+from SerialClass import SerialWorker
 
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
@@ -23,6 +26,28 @@ class mywindow(QtWidgets.QMainWindow):
     port_lines = []
     time_line_current_tab = []
     temp_line_current_tab = []
+
+    thread1 = QtCore.QThread()
+    thread2 = QtCore.QThread()
+    thread3 = QtCore.QThread()
+    thread4 = QtCore.QThread()
+    thread5 = QtCore.QThread()
+    thread6 = QtCore.QThread()
+    thread7 = QtCore.QThread()
+    thread8 = QtCore.QThread()
+    thread9 = QtCore.QThread()
+    thread10 = QtCore.QThread()
+
+    worker1 = SerialWorker('COM1', 9600)
+    worker2 = SerialWorker('COM2', 9600)
+    worker3 = SerialWorker('COM3', 9600)
+    worker4 = SerialWorker('COM4', 9600)
+    worker5 = SerialWorker('COM5', 9600)
+    worker6 = SerialWorker('COM6', 9600)
+    worker7 = SerialWorker('COM7', 9600)
+    worker8 = SerialWorker('COM8', 9600)
+    worker9 = SerialWorker('COM9', 9600)
+    worker10 = SerialWorker('COM10', 9600)
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -63,6 +88,47 @@ class mywindow(QtWidgets.QMainWindow):
         self.plotNavs[0].toggleViewAction().trigger()
         self.ui.tabWidget.currentChanged.connect(self.tab_changed)
         self.update_tab_graph(0)
+
+        # QThreads for serial port
+        self.worker1.moveToThread(self.thread1)
+        self.thread1.started.connect(self.worker1.task)
+        self.thread1.start()
+
+        self.worker2.moveToThread(self.thread2)
+        self.thread2.started.connect(self.worker2.task)
+        self.thread2.start()
+
+        self.worker3.moveToThread(self.thread3)
+        self.thread3.started.connect(self.worker3.task)
+        self.thread3.start()
+
+        self.worker4.moveToThread(self.thread4)
+        self.thread4.started.connect(self.worker4.task)
+        self.thread4.start()
+
+        self.worker5.moveToThread(self.thread5)
+        self.thread5.started.connect(self.worker5.task)
+        self.thread5.start()
+
+        self.worker6.moveToThread(self.thread6)
+        self.thread6.started.connect(self.worker6.task)
+        self.thread6.start()
+
+        self.worker7.moveToThread(self.thread7)
+        self.thread7.started.connect(self.worker7.task)
+        self.thread7.start()
+
+        self.worker8.moveToThread(self.thread8)
+        self.thread8.started.connect(self.worker8.task)
+        self.thread8.start()
+
+        self.worker9.moveToThread(self.thread9)
+        self.thread9.started.connect(self.worker9.task)
+        self.thread9.start()
+
+        self.worker10.moveToThread(self.thread10)
+        self.thread10.started.connect(self.worker10.task)
+        self.thread10.start()
 
         # Инициализируем QSystemTrayIcon
         self.tray_icon = QSystemTrayIcon(self)
@@ -830,7 +896,6 @@ class mywindow(QtWidgets.QMainWindow):
                 fr.close()
         except FileNotFoundError:
             print('File graph.cfg not found')
-        print(self.time_line_current_tab)
         self.plots[index].canvas.axes.clear()
         self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)

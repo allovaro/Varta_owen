@@ -2,41 +2,20 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5.QtSerialPort import QSerialPort
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
 from graph_ui import Ui_Graph_editor
 import sys
+import time
 import serial
 from serial.tools.list_ports_windows import comports
+from SerialClass import SerialWorker
 
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
 import random
-
-
-# from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QThread
-from PyQt5.QtSerialPort import QSerialPort
-# import sys
-class SerialReadThread(QThread):
-
-    def __init__(self, serial):
-        QThread.__init__(self)
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        """
-        :return:
-        """
-        while True:
-            print('MyThread')
-            sleep(1)
-
-
-
 
 class mywindow(QtWidgets.QMainWindow):
     tray_icon = None
@@ -47,8 +26,19 @@ class mywindow(QtWidgets.QMainWindow):
     port_lines = []
     time_line_current_tab = []
     temp_line_current_tab = []
-    serial_1 = QSerialPort(self)
-    myThread = SerialReadThread()
+    # serial_1 = QSerialPort(self)
+    # myThread = SerialReadThread()
+
+    thread1 = QtCore.QThread()
+    thread2 = QtCore.QThread()
+    thread3 = QtCore.QThread()
+    thread4 = QtCore.QThread()
+    thread5 = QtCore.QThread()
+    thread6 = QtCore.QThread()
+    thread7 = QtCore.QThread()
+    thread8 = QtCore.QThread()
+    thread9 = QtCore.QThread()
+    thread10 = QtCore.QThread()
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -90,19 +80,63 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.tabWidget.currentChanged.connect(self.tab_changed)
         self.update_tab_graph(0)
 
-        # Serial ports
+        # QThreads for serial port
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        self.worker1 = SerialWorker(1, lines[0][:-1], lines[1][:-1])
+        self.worker2 = SerialWorker(2, lines[5][:-1], lines[6][:-1])
+        self.worker3 = SerialWorker(3, lines[10][:-1], lines[11][:-1])
+        self.worker4 = SerialWorker(4, lines[15][:-1], lines[16][:-1])
+        self.worker5 = SerialWorker(5, lines[20][:-1], lines[21][:-1])
+        self.worker6 = SerialWorker(6, lines[25][:-1], lines[26][:-1])
+        self.worker7 = SerialWorker(7, lines[30][:-1], lines[31][:-1])
+        self.worker8 = SerialWorker(8, lines[35][:-1], lines[36][:-1])
+        self.worker9 = SerialWorker(9, lines[40][:-1], lines[41][:-1])
+        self.worker10 = SerialWorker(10, lines[45][:-1], lines[46][:-1])
 
+        self.worker1.moveToThread(self.thread1)
+        self.thread1.started.connect(self.worker1.task)
+        self.thread1.start()
 
-        self.myThread.start()
-        PORT = 'COM11'
+        self.worker2.moveToThread(self.thread2)
+        self.thread2.started.connect(self.worker2.task)
+        self.thread2.start()
 
-        self.serial_1.setPortName(port=PORT)
-        self.serial_1.setBaudRate(115200)
-        self.serial_1.setDataBits(8)
-        self.serial_1.setParity(QSerialPort.NoParity)
-        self.serial_1.setStopBits(1)
-        self.serial_1.open(QIODevice.ReadWrite)
-        self.serial_1.received_data.connect(self.on_serial_1_read)
+        self.worker3.moveToThread(self.thread3)
+        self.thread3.started.connect(self.worker3.task)
+        self.thread3.start()
+
+        self.worker4.moveToThread(self.thread4)
+        self.thread4.started.connect(self.worker4.task)
+        self.thread4.start()
+
+        self.worker5.moveToThread(self.thread5)
+        self.thread5.started.connect(self.worker5.task)
+        self.thread5.start()
+
+        self.worker6.moveToThread(self.thread6)
+        self.thread6.started.connect(self.worker6.task)
+        self.thread6.start()
+
+        self.worker7.moveToThread(self.thread7)
+        self.thread7.started.connect(self.worker7.task)
+        self.thread7.start()
+
+        self.worker8.moveToThread(self.thread8)
+        self.thread8.started.connect(self.worker8.task)
+        self.thread8.start()
+
+        self.worker9.moveToThread(self.thread9)
+        self.thread9.started.connect(self.worker9.task)
+        self.thread9.start()
+
+        self.worker10.moveToThread(self.thread10)
+        self.thread10.started.connect(self.worker10.task)
+        self.thread10.start()
 
         # Инициализируем QSystemTrayIcon
         self.tray_icon = QSystemTrayIcon(self)
@@ -875,13 +909,12 @@ class mywindow(QtWidgets.QMainWindow):
                 fr.close()
         except FileNotFoundError:
             print('File graph.cfg not found')
-        print(self.time_line_current_tab)
         self.plots[index].canvas.axes.clear()
         self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
         self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
-
+        self.plots[index].canvas.draw()
 
 
 def main():

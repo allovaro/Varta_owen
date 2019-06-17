@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
+from PyQt5.QtSerialPort import QSerialPort
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
@@ -14,6 +15,29 @@ import numpy as np
 import random
 
 
+# from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QThread
+from PyQt5.QtSerialPort import QSerialPort
+# import sys
+class SerialReadThread(QThread):
+
+    def __init__(self, serial):
+        QThread.__init__(self)
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        """
+        :return:
+        """
+        while True:
+            print('MyThread')
+            sleep(1)
+
+
+
+
 class mywindow(QtWidgets.QMainWindow):
     tray_icon = None
     etalon_temp = None
@@ -23,6 +47,8 @@ class mywindow(QtWidgets.QMainWindow):
     port_lines = []
     time_line_current_tab = []
     temp_line_current_tab = []
+    serial_1 = QSerialPort(self)
+    myThread = SerialReadThread()
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -64,6 +90,20 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.tabWidget.currentChanged.connect(self.tab_changed)
         self.update_tab_graph(0)
 
+        # Serial ports
+
+
+        self.myThread.start()
+        PORT = 'COM11'
+
+        self.serial_1.setPortName(port=PORT)
+        self.serial_1.setBaudRate(115200)
+        self.serial_1.setDataBits(8)
+        self.serial_1.setParity(QSerialPort.NoParity)
+        self.serial_1.setStopBits(1)
+        self.serial_1.open(QIODevice.ReadWrite)
+        self.serial_1.received_data.connect(self.on_serial_1_read)
+
         # Инициализируем QSystemTrayIcon
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QtGui.QIcon('lines.png'))
@@ -79,6 +119,8 @@ class mywindow(QtWidgets.QMainWindow):
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
+
+
 
     def tab_changed(self, index):
         # Показ навбара для текущей вкладки и скрытие от предыдущей
@@ -98,6 +140,9 @@ class mywindow(QtWidgets.QMainWindow):
             QSystemTrayIcon.Information,
             2000
         )
+
+    def on_serial_1_read(self):
+        print(self.serial_1.readAll())
 
     def graph_open(self):
         self.window_graph = QtWidgets.QMainWindow()

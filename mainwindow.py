@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
 from graph_ui import Ui_Graph_editor
-import sys
+import sys, glob, os, csv
 import time
 import serial
 from serial.tools.list_ports_windows import comports
@@ -912,9 +912,49 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.axes.clear()
         self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
+        self.plots[index].canvas.axes.plot(self.get_last_graph_points(index + 1))
+        print(self.get_last_graph_points(index + 1))
         self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
         self.plots[index].canvas.draw()
+
+    def get_last_graph_points(self, num):
+        # Извлекаем текущий месяц для проверки существует ли такая папка
+        time_current = time.strftime("%Y,%m,%d,%H,%M,%S")
+        t = time_current.split(',')
+        numbers = [int(x) for x in t]
+        # Проверяем есть ли такая папка если нет, то создаем ее
+        if os.path.isdir(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])):
+            path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
+        else:
+            os.makedirs(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2]))
+            path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
+
+        file_names = glob.glob1(path, "owen" + str(num) + "*")
+        print('Files count:{}', len(file_names))
+        realtime_data = []
+
+        if file_names:
+            for file in file_names:
+                with open(path + '\\' + file, 'r', newline='') as fp:
+                    reader = csv.reader(fp, delimiter=';')
+                    if reader:
+                        for row in reader:
+                            timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
+                            data = [int(row[1]), float(timeline)]
+                            realtime_data.append(data)
+                    else:
+                        return []
+            return list(zip(*realtime_data[::-1]))
+        else:
+            return []
+
+
+        # преобразование временной метки в часы,минуты
+        # time.strftime("%H,%M", time.localtime(int("1560878283")))
+        # print(realtime_data[-1][0])
+        # print(realtime_data[-1][1])
+
 
 
 def main():

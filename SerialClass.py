@@ -32,11 +32,11 @@ class SerialWorker(QtCore.QObject):
                 data = int(self.serial_port.readline())
                 print(data)
                 work_path = self.check_dir_path()  #  Проверяем существует ли папка с текущим днем если нет, то создаем
-                file_name = self.last_file_name(120, work_path, self.owen_num)
-                if file_name == '-1':  #  Проверка есть ли файл старше 15 минут
-                    self.create_new_file(work_path)
-                else:
-                    self.add_new_data(work_path + '\\' + file_name, int(data))
+                # file_name = self.last_file_name(600, work_path, self.owen_num)
+                # if file_name == '-1':  #  Проверка есть ли файл старше 15 минут
+                #     self.create_new_file(work_path)
+                # else:
+                #     self.add_new_data(work_path + '\\' + file_name, int(data))
 
             else:
                 for inf in info:
@@ -91,10 +91,12 @@ class SerialWorker(QtCore.QObject):
                     min = int(file[-6:-4])
                     sec_file = hour * 3600 + min * 60
                     sec_time = numbers[3] * 3600 + numbers[4] * 60
-                    # print('Minus{}', sec_time - sec_file)
-                    # print('sec_file{}; sec_time{}', sec_file, sec_time)
+                    print('Minus{}', sec_time - sec_file)
+                    print('sec_file{}; sec_time{}', sec_file, sec_time)
                     if sec_file > sec_time - interval_secs:
                         return file
+                    else:
+                        return '-1'
                 else:
                     return '-1'
         else:

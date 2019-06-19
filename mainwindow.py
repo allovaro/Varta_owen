@@ -1,12 +1,13 @@
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
+from PyQt5.QtSerialPort import QSerialPort
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
 from graph_ui import Ui_Graph_editor
-import sys
+import sys, glob, os, csv
 import time
 import serial
 from serial.tools.list_ports_windows import comports
@@ -15,7 +16,6 @@ from SerialClass import SerialWorker
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
 import random
-
 
 class mywindow(QtWidgets.QMainWindow):
     tray_icon = None
@@ -26,6 +26,8 @@ class mywindow(QtWidgets.QMainWindow):
     port_lines = []
     time_line_current_tab = []
     temp_line_current_tab = []
+    # serial_1 = QSerialPort(self)
+    # myThread = SerialReadThread()
 
     thread1 = QtCore.QThread()
     thread2 = QtCore.QThread()
@@ -37,17 +39,6 @@ class mywindow(QtWidgets.QMainWindow):
     thread8 = QtCore.QThread()
     thread9 = QtCore.QThread()
     thread10 = QtCore.QThread()
-
-    worker1 = SerialWorker('COM1', 9600)
-    worker2 = SerialWorker('COM2', 9600)
-    worker3 = SerialWorker('COM3', 9600)
-    worker4 = SerialWorker('COM4', 9600)
-    worker5 = SerialWorker('COM5', 9600)
-    worker6 = SerialWorker('COM6', 9600)
-    worker7 = SerialWorker('COM7', 9600)
-    worker8 = SerialWorker('COM8', 9600)
-    worker9 = SerialWorker('COM9', 9600)
-    worker10 = SerialWorker('COM10', 9600)
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -90,6 +81,23 @@ class mywindow(QtWidgets.QMainWindow):
         self.update_tab_graph(0)
 
         # QThreads for serial port
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        self.worker1 = SerialWorker(1, lines[0][:-1], lines[1][:-1])
+        self.worker2 = SerialWorker(2, lines[5][:-1], lines[6][:-1])
+        self.worker3 = SerialWorker(3, lines[10][:-1], lines[11][:-1])
+        self.worker4 = SerialWorker(4, lines[15][:-1], lines[16][:-1])
+        self.worker5 = SerialWorker(5, lines[20][:-1], lines[21][:-1])
+        self.worker6 = SerialWorker(6, lines[25][:-1], lines[26][:-1])
+        self.worker7 = SerialWorker(7, lines[30][:-1], lines[31][:-1])
+        self.worker8 = SerialWorker(8, lines[35][:-1], lines[36][:-1])
+        self.worker9 = SerialWorker(9, lines[40][:-1], lines[41][:-1])
+        self.worker10 = SerialWorker(10, lines[45][:-1], lines[46][:-1])
+
         self.worker1.moveToThread(self.thread1)
         self.thread1.started.connect(self.worker1.task)
         self.thread1.start()
@@ -146,6 +154,8 @@ class mywindow(QtWidgets.QMainWindow):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
 
+
+
     def tab_changed(self, index):
         # Показ навбара для текущей вкладки и скрытие от предыдущей
         self.plotNavs[self.prev_tab_index].toggleViewAction().trigger()
@@ -164,6 +174,9 @@ class mywindow(QtWidgets.QMainWindow):
             QSystemTrayIcon.Information,
             2000
         )
+
+    def on_serial_1_read(self):
+        print(self.serial_1.readAll())
 
     def graph_open(self):
         self.window_graph = QtWidgets.QMainWindow()
@@ -899,9 +912,49 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.axes.clear()
         self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
+        self.plots[index].canvas.axes.plot(self.get_last_graph_points(index + 1))
+        print(self.get_last_graph_points(index + 1))
         self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
         self.plots[index].canvas.draw()
+
+    def get_last_graph_points(self, num):
+        # Извлекаем текущий месяц для проверки существует ли такая папка
+        time_current = time.strftime("%Y,%m,%d,%H,%M,%S")
+        t = time_current.split(',')
+        numbers = [int(x) for x in t]
+        # Проверяем есть ли такая папка если нет, то создаем ее
+        if os.path.isdir(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])):
+            path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
+        else:
+            os.makedirs(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2]))
+            path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
+
+        file_names = glob.glob1(path, "owen" + str(num) + "*")
+        print('Files count:{}', len(file_names))
+        realtime_data = []
+
+        if file_names:
+            for file in file_names:
+                with open(path + '\\' + file, 'r', newline='') as fp:
+                    reader = csv.reader(fp, delimiter=';')
+                    if reader:
+                        for row in reader:
+                            timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
+                            data = [int(row[1]), float(timeline)]
+                            realtime_data.append(data)
+                    else:
+                        return []
+            return list(zip(*realtime_data[::-1]))
+        else:
+            return []
+
+
+        # преобразование временной метки в часы,минуты
+        # time.strftime("%H,%M", time.localtime(int("1560878283")))
+        # print(realtime_data[-1][0])
+        # print(realtime_data[-1][1])
+
 
 
 def main():

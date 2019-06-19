@@ -903,18 +903,19 @@ class mywindow(QtWidgets.QMainWindow):
             with open('graph.cfg', 'r') as fr:
                 lines = fr.readlines()
                 self.temp_line_current_tab = lines[index * 2].split()
-                self.temp_line_current_tab = list(map(float, self.temp_line_current_tab))
+                # self.temp_line_current_tab = list(map(float, self.temp_line_current_tab))
                 self.time_line_current_tab = lines[index * 2 + 1].split()
-                self.time_line_current_tab = list(map(float, self.time_line_current_tab))
+                # self.time_line_current_tab = list(map(float, self.time_line_current_tab))
                 fr.close()
         except FileNotFoundError:
             print('File graph.cfg not found')
         self.plots[index].canvas.axes.clear()
         self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
-        self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
-        self.plots[index].canvas.axes.plot(self.get_last_graph_points(index + 1))
+        # self.plots[index].canvas.axes.plot_date(self.time_line_current_tab, self.temp_line_current_tab, '-')
+        x, y = self.get_last_graph_points(index + 1)
+        self.plots[index].canvas.axes.plot_date(x, y, '-')
         print(self.get_last_graph_points(index + 1))
-        self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper left')
+        self.plots[index].canvas.axes.legend(('Заданная', 'Реальная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
         self.plots[index].canvas.draw()
 
@@ -932,7 +933,8 @@ class mywindow(QtWidgets.QMainWindow):
 
         file_names = glob.glob1(path, "owen" + str(num) + "*")
         print('Files count:{}', len(file_names))
-        realtime_data = []
+        realtime_data_timeline = []
+        realtime_data_temperature = []
 
         if file_names:
             for file in file_names:
@@ -940,12 +942,13 @@ class mywindow(QtWidgets.QMainWindow):
                     reader = csv.reader(fp, delimiter=';')
                     if reader:
                         for row in reader:
-                            timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
-                            data = [int(row[1]), float(timeline)]
-                            realtime_data.append(data)
+                            # timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
+                            # data = [int(row[1]), float(timeline)]
+                            realtime_data_timeline.append(row[0])
+                            realtime_data_temperature.append(int(row[1]))
                     else:
                         return []
-            return list(zip(*realtime_data[::-1]))
+            return realtime_data_timeline, realtime_data_temperature
         else:
             return []
 

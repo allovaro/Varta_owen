@@ -136,4 +136,5 @@ class SerialWorker(QtCore.QObject):
     def add_new_data(self, file, num):
         with open(file, 'a', newline='') as fp:
             writer = csv.writer(fp, delimiter=';')
-            writer.writerow([int(time.time()), num])  # write header
+            # writer.writerow([int(time.time()), num])  # write header
+            writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])

@@ -830,13 +830,11 @@ class mywindow(QtWidgets.QMainWindow):
                 fr.close()
         except FileNotFoundError:
             print('File graph.cfg not found')
-        print(self.time_line_current_tab)
         self.plots[index].canvas.axes.clear()
         self.plots[index].canvas.axes.set_title('Печь №' + str(index + 1))
         self.plots[index].canvas.axes.plot(self.time_line_current_tab, self.temp_line_current_tab)
         self.plots[index].canvas.axes.legend(('Реальная', 'Заданная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
-
 
 
 def main():

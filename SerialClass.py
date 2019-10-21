@@ -1,5 +1,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QObject, QIODevice
+from PyQt5.QtCore import (Qt, pyqtSignal)
 import serial
 from PyQt5.QtSerialPort import QSerialPortInfo
 import time
@@ -12,6 +13,9 @@ class SerialWorker(QtCore.QObject):
     Класс для создания отдельного потока считывания данных из
     COM порта
     """
+    port_opened = pyqtSignal(str)
+
+
     def __init__(self, owen_num, port_name='COM1', baudrate=9600):
         QtCore.QObject.__init__(self)
         self.port_name = port_name
@@ -29,8 +33,10 @@ class SerialWorker(QtCore.QObject):
             time.sleep(1)
             info = QSerialPortInfo.availablePorts()
             if self.serial_port.isOpen():
+                self.port_opened.emit('open')
                 data = int(self.serial_port.readline())
                 print(data)
+
                 work_path = self.check_dir_path()  #  Проверяем существует ли папка с текущим днем если нет, то создаем
                 # file_name = self.last_file_name(600, work_path, self.owen_num)
                 # if file_name == '-1':  #  Проверка есть ли файл старше 15 минут
@@ -39,13 +45,14 @@ class SerialWorker(QtCore.QObject):
                 #     self.add_new_data(work_path + '\\' + file_name, int(data))
 
             else:
+                self.port_opened.emit('close')
                 for inf in info:
                     if inf.portName() == self.port_name:
                         # print('Inf.portName = {}, config_port_name = {}'.format(inf.portName(), self.port_name))
                         if not self.serial_port.isOpen():
                             try:
                                 self.serial_port.port = self.port_name
-                                self.serial_port.timeout = 5
+                                self.serial_port.timeout = None
                                 self.serial_port.baudrate = self.baudrate
                                 self.serial_port.bytesize = serial.EIGHTBITS  # number of bits per bytes
                                 self.serial_port.parity = serial.PARITY_NONE  # set parity check: no parity

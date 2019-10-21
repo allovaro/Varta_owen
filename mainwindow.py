@@ -6,7 +6,9 @@ from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
+from about_ui import Ui_About
 from graph_ui import Ui_Graph_editor
+from report_ui import Ui_Report
 import sys, glob, os, csv
 import time
 import serial
@@ -37,8 +39,8 @@ class mywindow(QtWidgets.QMainWindow):
     thread6 = QtCore.QThread()
     thread7 = QtCore.QThread()
     thread8 = QtCore.QThread()
-    thread9 = QtCore.QThread()
-    thread10 = QtCore.QThread()
+    # thread9 = QtCore.QThread()
+    # thread10 = QtCore.QThread()
 
     def __init__(self):
         super(mywindow, self).__init__()
@@ -49,94 +51,15 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.exit.triggered.connect(qApp.quit)
         self.ui.ports.triggered.connect(self.ports_open)
         self.ui.graph.triggered.connect(self.graph_open)
-
-        self.plots = [self.ui.MplWidget_1,
-                      self.ui.MplWidget_2,
-                      self.ui.MplWidget_3,
-                      self.ui.MplWidget_4,
-                      self.ui.MplWidget_5,
-                      self.ui.MplWidget_6,
-                      self.ui.MplWidget_7,
-                      self.ui.MplWidget_8,
-                      self.ui.MplWidget_9,
-                      self.ui.MplWidget_10]
-
-        # Инициализация навигационных баров для графиков
-        self.plotNavs = [NavigationToolbar(self.plots[0].canvas, self),
-                         NavigationToolbar(self.plots[1].canvas, self),
-                         NavigationToolbar(self.plots[2].canvas, self),
-                         NavigationToolbar(self.plots[3].canvas, self),
-                         NavigationToolbar(self.plots[4].canvas, self),
-                         NavigationToolbar(self.plots[5].canvas, self),
-                         NavigationToolbar(self.plots[6].canvas, self),
-                         NavigationToolbar(self.plots[7].canvas, self),
-                         NavigationToolbar(self.plots[8].canvas, self),
-                         NavigationToolbar(self.plots[9].canvas, self)]
-        for navBar in self.plotNavs:
-            self.addToolBar(QtCore.Qt.BottomToolBarArea, navBar)
-            navBar.toggleViewAction().trigger()
-            navBar.toggleViewAction().trigger()
-        self.plotNavs[0].toggleViewAction().trigger()
-        self.ui.tabWidget.currentChanged.connect(self.tab_changed)
-        self.update_tab_graph(0)
-
-        # QThreads for serial port
-        try:
-            with open('port_configuration.cfg', 'r') as f:
-                lines = f.readlines()
-                f.close()
-        except FileNotFoundError:
-            print('File port_configuration.cfg not found')
-        self.worker1 = SerialWorker(1, lines[0][:-1], lines[1][:-1])
-        self.worker2 = SerialWorker(2, lines[5][:-1], lines[6][:-1])
-        self.worker3 = SerialWorker(3, lines[10][:-1], lines[11][:-1])
-        self.worker4 = SerialWorker(4, lines[15][:-1], lines[16][:-1])
-        self.worker5 = SerialWorker(5, lines[20][:-1], lines[21][:-1])
-        self.worker6 = SerialWorker(6, lines[25][:-1], lines[26][:-1])
-        self.worker7 = SerialWorker(7, lines[30][:-1], lines[31][:-1])
-        self.worker8 = SerialWorker(8, lines[35][:-1], lines[36][:-1])
-        self.worker9 = SerialWorker(9, lines[40][:-1], lines[41][:-1])
-        self.worker10 = SerialWorker(10, lines[45][:-1], lines[46][:-1])
-
-        self.worker1.moveToThread(self.thread1)
-        self.thread1.started.connect(self.worker1.task)
-        self.thread1.start()
-
-        self.worker2.moveToThread(self.thread2)
-        self.thread2.started.connect(self.worker2.task)
-        self.thread2.start()
-
-        self.worker3.moveToThread(self.thread3)
-        self.thread3.started.connect(self.worker3.task)
-        self.thread3.start()
-
-        self.worker4.moveToThread(self.thread4)
-        self.thread4.started.connect(self.worker4.task)
-        self.thread4.start()
-
-        self.worker5.moveToThread(self.thread5)
-        self.thread5.started.connect(self.worker5.task)
-        self.thread5.start()
-
-        self.worker6.moveToThread(self.thread6)
-        self.thread6.started.connect(self.worker6.task)
-        self.thread6.start()
-
-        self.worker7.moveToThread(self.thread7)
-        self.thread7.started.connect(self.worker7.task)
-        self.thread7.start()
-
-        self.worker8.moveToThread(self.thread8)
-        self.thread8.started.connect(self.worker8.task)
-        self.thread8.start()
-
-        self.worker9.moveToThread(self.thread9)
-        self.thread9.started.connect(self.worker9.task)
-        self.thread9.start()
-
-        self.worker10.moveToThread(self.thread10)
-        self.thread10.started.connect(self.worker10.task)
-        self.thread10.start()
+        self.ui.About.triggered.connect(self.about_open)
+        self.ui.reportButton_1.clicked.connect(self.report_open)
+        self.ui.reportButton_2.clicked.connect(self.report_open)
+        self.ui.reportButton_3.clicked.connect(self.report_open)
+        self.ui.reportButton_4.clicked.connect(self.report_open)
+        self.ui.reportButton_5.clicked.connect(self.report_open)
+        self.ui.reportButton_6.clicked.connect(self.report_open)
+        self.ui.reportButton_7.clicked.connect(self.report_open)
+        self.ui.reportButton_8.clicked.connect(self.report_open)
 
         # Инициализируем QSystemTrayIcon
         self.tray_icon = QSystemTrayIcon(self)
@@ -154,20 +77,143 @@ class mywindow(QtWidgets.QMainWindow):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
 
+        # QThreads for serial port
+        try:
+            with open('port_configuration.cfg', 'r') as f:
+                lines = f.readlines()
+                f.close()
+        except FileNotFoundError:
+            print('File port_configuration.cfg not found')
+        self.worker1 = SerialWorker(1, lines[0][:-1], lines[1][:-1])
+        self.worker2 = SerialWorker(2, lines[5][:-1], lines[6][:-1])
+        self.worker3 = SerialWorker(3, lines[10][:-1], lines[11][:-1])
+        self.worker4 = SerialWorker(4, lines[15][:-1], lines[16][:-1])
+        self.worker5 = SerialWorker(5, lines[20][:-1], lines[21][:-1])
+        self.worker6 = SerialWorker(6, lines[25][:-1], lines[26][:-1])
+        self.worker7 = SerialWorker(7, lines[30][:-1], lines[31][:-1])
+        self.worker8 = SerialWorker(8, lines[35][:-1], lines[36][:-1])
+        # self.worker9 = SerialWorker(9, lines[40][:-1], lines[41][:-1])
+        # self.worker10 = SerialWorker(10, lines[45][:-1], lines[46][:-1])
 
+        self.worker1.moveToThread(self.thread1)
+        self.worker1.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_1.setText(lines[0][:-1])
+        self.thread1.started.connect(self.worker1.task)
+        self.thread1.start()
 
-    def tab_changed(self, index):
-        # Показ навбара для текущей вкладки и скрытие от предыдущей
-        self.plotNavs[self.prev_tab_index].toggleViewAction().trigger()
-        self.plotNavs[index].toggleViewAction().trigger()
-        self.prev_tab_index = index
+        self.worker2.moveToThread(self.thread2)
+        self.worker2.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_2.setText(lines[5][:-1])
+        self.thread2.started.connect(self.worker2.task)
+        self.thread2.start()
 
-        # Обновление эталонного графика для текущей вкладки
-        self.update_tab_graph(index)
+        self.worker3.moveToThread(self.thread3)
+        self.worker3.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_3.setText(lines[10][:-1])
+        self.thread3.started.connect(self.worker3.task)
+        self.thread3.start()
+
+        self.worker4.moveToThread(self.thread4)
+        self.worker4.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_4.setText(lines[15][:-1])
+        self.thread4.started.connect(self.worker4.task)
+        self.thread4.start()
+
+        self.worker5.moveToThread(self.thread5)
+        self.worker5.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_5.setText(lines[20][:-1])
+        self.thread5.started.connect(self.worker5.task)
+        self.thread5.start()
+
+        self.worker6.moveToThread(self.thread6)
+        self.worker6.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_6.setText(lines[25][:-1])
+        self.thread6.started.connect(self.worker6.task)
+        self.thread6.start()
+
+        self.worker7.moveToThread(self.thread7)
+        self.worker7.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_7.setText(lines[30][:-1])
+        self.thread7.started.connect(self.worker7.task)
+        self.thread7.start()
+
+        self.worker8.moveToThread(self.thread8)
+        self.worker8.port_opened.connect(self.change_port_view)
+        self.ui.portNumber_8.setText(lines[35][:-1])
+        self.thread8.started.connect(self.worker8.task)
+        self.thread8.start()
+
+        # self.worker9.moveToThread(self.thread9)
+        # self.worker9.port_opened.connect(self.change_port_view)
+        # self.thread9.start()
+        #
+        # self.worker10.moveToThread(self.thread10)
+        # self.thread10.started.connect(self.worker10.task)
+        # self.thread10.start()
+
+    def change_port_view(self, text):
+        if text == 'open':
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '1':
+                self.ui.statusLabel_1.setText('Открыт')
+                self.ui.statusLabel_1.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_1.setText('Закрыт')
+               self.ui.statusLabel_1.setStyleSheet('color: red')
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '2':
+                self.ui.statusLabel_2.setText('Открыт')
+                self.ui.statusLabel_2.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_2.setText('Закрыт')
+               self.ui.statusLabel_2.setStyleSheet('color: red')
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '3':
+                self.ui.statusLabel_3.setText('Открыт')
+                self.ui.statusLabel_3.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_3.setText('Закрыт')
+               self.ui.statusLabel_3.setStyleSheet('color: red')
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '4':
+                self.ui.statusLabel_4.setText('Открыт')
+                self.ui.statusLabel_4.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_4.setText('Закрыт')
+               self.ui.statusLabel_4.setStyleSheet('color: red')
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '5':
+                self.ui.statusLabel_5.setText('Открыт')
+                self.ui.statusLabel_5.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_5.setText('Закрыт')
+               self.ui.statusLabel_5.setStyleSheet('color: red')
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '6':
+                self.ui.statusLabel_6.setText('Открыт')
+                self.ui.statusLabel_6.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_6.setText('Закрыт')
+               self.ui.statusLabel_6.setStyleSheet('color: red')
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '7':
+                self.ui.statusLabel_7.setText('Открыт')
+                self.ui.statusLabel_7.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_7.setText('Закрыт')
+               self.ui.statusLabel_7.setStyleSheet('color: red')
+            # Выставляем надпись и меняем цвет открыт порт или нет
+            if self.sender().owen_num == '8':
+                self.ui.statusLabel_8.setText('Открыт')
+                self.ui.statusLabel_8.setStyleSheet('color: green')
+            else:
+               self.ui.statusLabel_8.setText('Закрыт')
+               self.ui.statusLabel_8.setStyleSheet('color: red')
 
     def closeEvent(self, event):
         event.ignore()
         self.hide()
+        print('Close event')
         self.tray_icon.showMessage(
             "Анализатор Варта ТП703",
             "Приложение было свернуто в трей",
@@ -275,6 +321,52 @@ class mywindow(QtWidgets.QMainWindow):
                 for i in range(50):
                     fr.write('\n')
                 fr.close()
+
+    def about_open(self):
+        self.window_about = QtWidgets.QMainWindow()
+        self.ui_about = Ui_About()
+        self.ui_about.setupUi(self.window_about)
+        self.window_about.show()
+
+    def report_open(self):
+        self.window_report = QtWidgets.QMainWindow()
+        self.ui_report = Ui_Report()
+        self.ui_report.setupUi(self.window_report)
+        title = 'Генератор отчета Печи {}'.format(self.detect_report_owen(self.sender()))
+        self.window_report.setWindowTitle(title)
+        self.ui_report.MplWidget.canvas.axes.clear()
+        self.time_line = [1, 2, 3, 4]
+        self.temp_line = [20, 150, 400, 450]
+        self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
+        self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
+        self.ui_report.MplWidget.canvas.axes.legend(u'Эталон', loc='lower center')
+        self.ui_report.MplWidget.canvas.draw()
+        self.window_report.show()
+
+    def detect_report_owen(self, obj):
+        if obj.objectName() == 'reportButton_1':
+            return 1
+        if obj.objectName() == 'reportButton_2':
+            return 2
+        if obj.objectName() == 'reportButton_3':
+            return 3
+        if obj.objectName() == 'reportButton_4':
+            return 4
+        if obj.objectName() == 'reportButton_5':
+            return 5
+        if obj.objectName() == 'reportButton_6':
+            return 6
+        if obj.objectName() == 'reportButton_7':
+            return 7
+        if obj.objectName() == 'reportButton_8':
+            return 8
+
+    def show_file_dialog(self):
+        files, _ = QFileDialog.getOpenFileNames(self, "QFileDialog.getOpenFileNames()", "",
+                                                "All Files (*);;Python Files (*.csv)", options=options)
+        if files:
+            print(files)
 
     def update_port_settings(self, index):
         try:
@@ -957,7 +1049,6 @@ class mywindow(QtWidgets.QMainWindow):
         # time.strftime("%H,%M", time.localtime(int("1560878283")))
         # print(realtime_data[-1][0])
         # print(realtime_data[-1][1])
-
 
 
 def main():

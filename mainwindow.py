@@ -97,12 +97,14 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.worker1.moveToThread(self.thread1)
         self.worker1.port_opened.connect(self.change_port_view)
+        self.worker1.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_1.setText(lines[0][:-1])
         self.thread1.started.connect(self.worker1.task)
         self.thread1.start()
 
         self.worker2.moveToThread(self.thread2)
         self.worker2.port_opened.connect(self.change_port_view)
+        self.worker2.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_2.setText(lines[5][:-1])
         self.thread2.started.connect(self.worker2.task)
         self.thread2.start()
@@ -157,58 +159,77 @@ class mywindow(QtWidgets.QMainWindow):
             if self.sender().owen_num == '1':
                 self.ui.statusLabel_1.setText('Открыт')
                 self.ui.statusLabel_1.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_1.setText('Закрыт')
-               self.ui.statusLabel_1.setStyleSheet('color: red')
             # Выставляем надпись и меняем цвет открыт порт или нет
-            if self.sender().owen_num == '2':
+            elif self.sender().owen_num == '2':
                 self.ui.statusLabel_2.setText('Открыт')
                 self.ui.statusLabel_2.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_2.setText('Закрыт')
-               self.ui.statusLabel_2.setStyleSheet('color: red')
             # Выставляем надпись и меняем цвет открыт порт или нет
-            if self.sender().owen_num == '3':
+            elif self.sender().owen_num == '3':
                 self.ui.statusLabel_3.setText('Открыт')
                 self.ui.statusLabel_3.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_3.setText('Закрыт')
-               self.ui.statusLabel_3.setStyleSheet('color: red')
             # Выставляем надпись и меняем цвет открыт порт или нет
-            if self.sender().owen_num == '4':
+            elif self.sender().owen_num == '4':
                 self.ui.statusLabel_4.setText('Открыт')
                 self.ui.statusLabel_4.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_4.setText('Закрыт')
-               self.ui.statusLabel_4.setStyleSheet('color: red')
             # Выставляем надпись и меняем цвет открыт порт или нет
-            if self.sender().owen_num == '5':
+            elif self.sender().owen_num == '5':
                 self.ui.statusLabel_5.setText('Открыт')
                 self.ui.statusLabel_5.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_5.setText('Закрыт')
-               self.ui.statusLabel_5.setStyleSheet('color: red')
             # Выставляем надпись и меняем цвет открыт порт или нет
-            if self.sender().owen_num == '6':
+            elif self.sender().owen_num == '6':
                 self.ui.statusLabel_6.setText('Открыт')
                 self.ui.statusLabel_6.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_6.setText('Закрыт')
-               self.ui.statusLabel_6.setStyleSheet('color: red')
             # Выставляем надпись и меняем цвет открыт порт или нет
-            if self.sender().owen_num == '7':
+            elif self.sender().owen_num == '7':
                 self.ui.statusLabel_7.setText('Открыт')
                 self.ui.statusLabel_7.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_7.setText('Закрыт')
-               self.ui.statusLabel_7.setStyleSheet('color: red')
             # Выставляем надпись и меняем цвет открыт порт или нет
-            if self.sender().owen_num == '8':
+            elif self.sender().owen_num == '8':
                 self.ui.statusLabel_8.setText('Открыт')
                 self.ui.statusLabel_8.setStyleSheet('color: green')
-            else:
-               self.ui.statusLabel_8.setText('Закрыт')
-               self.ui.statusLabel_8.setStyleSheet('color: red')
+        if text == 'close':
+            if self.sender().owen_num == '1':
+                self.ui.statusLabel_1.setText('Закрыт')
+                self.ui.statusLabel_1.setStyleSheet('color: red')
+            if self.sender().owen_num == '2':
+                self.ui.statusLabel_2.setText('Закрыт')
+                self.ui.statusLabel_2.setStyleSheet('color: red')
+            if self.sender().owen_num == '3':
+                self.ui.statusLabel_3.setText('Закрыт')
+                self.ui.statusLabel_3.setStyleSheet('color: red')
+            if self.sender().owen_num == '4':
+                self.ui.statusLabel_4.setText('Закрыт')
+                self.ui.statusLabel_4.setStyleSheet('color: red')
+            if self.sender().owen_num == '5':
+                self.ui.statusLabel_5.setText('Закрыт')
+                self.ui.statusLabel_5.setStyleSheet('color: red')
+            if self.sender().owen_num == '6':
+                self.ui.statusLabel_6.setText('Закрыт')
+                self.ui.statusLabel_6.setStyleSheet('color: red')
+            if self.sender().owen_num == '7':
+                self.ui.statusLabel_7.setText('Закрыт')
+                self.ui.statusLabel_7.setStyleSheet('color: red')
+            if self.sender().owen_num == '8':
+                self.ui.statusLabel_8.setText('Закрыт')
+                self.ui.statusLabel_8.setStyleSheet('color: red')
+
+    def change_temp_in_mainwindow(self, text):
+        if self.sender().owen_num == '1':
+            self.ui.tempLable_1.setText(text)
+        if self.sender().owen_num == '2':
+            self.ui.tempLable_2.setText(text)
+        if self.sender().owen_num == '3':
+            self.ui.tempLable_3.setText(text)
+        if self.sender().owen_num == '4':
+            self.ui.tempLable_4.setText(text)
+        if self.sender().owen_num == '5':
+            self.ui.tempLable_5.setText(text)
+        if self.sender().owen_num == '6':
+            self.ui.tempLable_6.setText(text)
+        if self.sender().owen_num == '7':
+            self.ui.tempLable_7.setText(text)
+        if self.sender().owen_num == '8':
+            self.ui.tempLable_8.setText(text)
 
     def closeEvent(self, event):
         event.ignore()

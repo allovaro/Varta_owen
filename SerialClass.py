@@ -14,9 +14,10 @@ class SerialWorker(QtCore.QObject):
     COM порта
     """
     port_opened = pyqtSignal(str)
+    currTemp = pyqtSignal(str)
 
 
-    def __init__(self, owen_num, port_name='COM1', baudrate=9600):
+    def __init__(self, owen_num, port_name='', baudrate=9600):
         QtCore.QObject.__init__(self)
         self.port_name = port_name
         self.baudrate = baudrate
@@ -34,8 +35,15 @@ class SerialWorker(QtCore.QObject):
             info = QSerialPortInfo.availablePorts()
             if self.serial_port.isOpen():
                 self.port_opened.emit('open')
-                data = int(self.serial_port.readline())
-                print(data)
+                try:
+                    data = self.serial_port.readline()
+                    self.currTemp.emit(data.decode('utf-8'))
+                    print(data.decode('utf-8'))
+                except serial.SerialException:
+                    self.serial_port.close()
+                    self.port_opened.emit('close')
+                    self.currTemp.emit('-1')
+                    print('Port {} error'.format(self.port_name))
 
                 work_path = self.check_dir_path()  #  Проверяем существует ли папка с текущим днем если нет, то создаем
                 # file_name = self.last_file_name(600, work_path, self.owen_num)

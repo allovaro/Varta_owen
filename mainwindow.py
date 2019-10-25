@@ -3,7 +3,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5.QtSerialPort import QSerialPort
 from PyQt5.QtCore import QThread
-from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp
+from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp, QFileDialog
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
 from about_ui import Ui_About
@@ -353,11 +353,13 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_report = QtWidgets.QMainWindow()
         self.ui_report = Ui_Report()
         self.ui_report.setupUi(self.window_report)
+        self.ui_report.filesDialog.clicked.connect(self.show_file_dialog)
+        self.change_etalon_graph1(self.detect_report_owen(self.sender()))
         title = 'Генератор отчета Печи {}'.format(self.detect_report_owen(self.sender()))
         self.window_report.setWindowTitle(title)
         self.ui_report.MplWidget.canvas.axes.clear()
-        self.time_line = [1, 2, 3, 4]
-        self.temp_line = [20, 150, 400, 450]
+       # self.time_line = [1, 2, 3, 4]
+       # self.temp_line = [20, 150, 400, 450]
         self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
@@ -384,10 +386,13 @@ class mywindow(QtWidgets.QMainWindow):
             return 8
 
     def show_file_dialog(self):
-        files, _ = QFileDialog.getOpenFileNames(self, "QFileDialog.getOpenFileNames()", "",
-                                                "All Files (*);;Python Files (*.csv)", options=options)
-        if files:
-            print(files)
+        dialogSelectFiles = QFileDialog()
+        dialogSelectFiles.setFileMode(QFileDialog.ExistingFiles)      # включение множественного выбора
+
+        dialogSelectFiles.exec_()
+ 
+        data = dialogSelectFiles.selectedFiles()
+        print(data)
 
     def update_port_settings(self, index):
         try:
@@ -420,18 +425,6 @@ class mywindow(QtWidgets.QMainWindow):
                 fr.close()
         except FileNotFoundError:
             print('File port_configuration.cfg not found')
-        # ser = serial.Serial()  # open serial port
-        # ser.baudrate = 9600
-        # ser.stopbits = 1
-        # ser.parity = 'N'
-        # ser.port = 'COM12'
-        # ser.open()
-        # print(ser.read(6))
-        # ser.close()
-        # global window2
-        # if window2 is None:
-        # window2 = port_parameters_ui.Ui_Form()
-        # window2.show()
 
     def update_port_Name_settings(self, index):
         owen_index = self.ui_ports.owenName_comboBox.currentIndex()
@@ -662,6 +655,18 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.set_xlabel('Время, ч')
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.legend(u'Эталон', loc='lower center')
         self.ui_graph.MplWidgetGraphEditor.canvas.draw()
+
+    def change_etalon_graph1(self, owen_num):
+        try:
+            with open('graph.cfg', 'r') as fr:
+                lines = fr.readlines()
+                self.temp_line = lines[owen_num * 2 - 2].split()
+                self.temp_line = list(map(float, self.temp_line))
+                self.time_line = lines[owen_num * 2 - 1].split()
+                self.time_line = list(map(float, self.time_line))
+                fr.close()
+        except FileNotFoundError:
+            print('File graph.cfg not found')
 
     def change_etalon_graph(self, text):
         if text == 'Печь 1':

@@ -2,7 +2,8 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5.QtSerialPort import QSerialPort
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, QRegExp
+from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp, QFileDialog
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
@@ -242,9 +243,6 @@ class mywindow(QtWidgets.QMainWindow):
             2000
         )
 
-    def on_serial_1_read(self):
-        print(self.serial_1.readAll())
-
     def graph_open(self):
         self.window_graph = QtWidgets.QMainWindow()
         self.ui_graph = Ui_Graph_editor()
@@ -299,6 +297,61 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_graph.lineEditTime22.editingFinished.connect(self.update_etalon_graph)
         self.ui_graph.lineEditTime23.editingFinished.connect(self.update_etalon_graph)
         self.ui_graph.lineEditTime24.editingFinished.connect(self.update_etalon_graph)
+
+        timeRange = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"  # Part of the regular expression
+        # Regulare expression
+        timeRegex = QRegExp("^" + timeRange + "\\." + timeRange + "$")
+        tempRegex = QRegExp("^\d{1,4}$")
+        timeValidator = QRegExpValidator(timeRegex, self)
+        tempValidator = QRegExpValidator(tempRegex, self)
+        self.ui_graph.lineEditTime1.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp1.setValidator(tempValidator)
+        self.ui_graph.lineEditTime2.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp2.setValidator(tempValidator)
+        self.ui_graph.lineEditTime3.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp3.setValidator(tempValidator)
+        self.ui_graph.lineEditTime4.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp4.setValidator(tempValidator)
+        self.ui_graph.lineEditTime5.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp5.setValidator(tempValidator)
+        self.ui_graph.lineEditTime6.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp6.setValidator(tempValidator)
+        self.ui_graph.lineEditTime7.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp7.setValidator(tempValidator)
+        self.ui_graph.lineEditTime8.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp8.setValidator(tempValidator)
+        self.ui_graph.lineEditTime9.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp9.setValidator(tempValidator)
+        self.ui_graph.lineEditTime10.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp10.setValidator(tempValidator)
+        self.ui_graph.lineEditTime11.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp11.setValidator(tempValidator)
+        self.ui_graph.lineEditTime12.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp12.setValidator(tempValidator)
+        self.ui_graph.lineEditTime13.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp13.setValidator(tempValidator)
+        self.ui_graph.lineEditTime14.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp14.setValidator(tempValidator)
+        self.ui_graph.lineEditTime15.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp15.setValidator(tempValidator)
+        self.ui_graph.lineEditTime16.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp16.setValidator(tempValidator)
+        self.ui_graph.lineEditTime17.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp17.setValidator(tempValidator)
+        self.ui_graph.lineEditTime18.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp18.setValidator(tempValidator)
+        self.ui_graph.lineEditTime19.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp19.setValidator(tempValidator)
+        self.ui_graph.lineEditTime20.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp20.setValidator(tempValidator)
+        self.ui_graph.lineEditTime21.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp21.setValidator(tempValidator)
+        self.ui_graph.lineEditTime22.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp22.setValidator(tempValidator)
+        self.ui_graph.lineEditTime23.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp23.setValidator(tempValidator)
+        self.ui_graph.lineEditTime24.setValidator(timeValidator)
+        self.ui_graph.lineEditTemp24.setValidator(tempValidator)
         try:
             with open('graph.cfg', 'r') as fr:
                 lines = fr.readlines()
@@ -353,17 +406,17 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_report = QtWidgets.QMainWindow()
         self.ui_report = Ui_Report()
         self.ui_report.setupUi(self.window_report)
-        self.ui_report.filesDialog.clicked.connect(self.show_file_dialog)
-        self.change_etalon_graph1(self.detect_report_owen(self.sender()))
-        title = 'Генератор отчета Печи {}'.format(self.detect_report_owen(self.sender()))
+        owen_num = self.detect_report_owen(self.sender())
+        self.ui_report.filesDialog.clicked.connect(lambda: self.show_file_dialog(owen_num))
+        self.change_etalon_graph1(owen_num)
+        title = 'Генератор отчета Печи №{}'.format(owen_num)
         self.window_report.setWindowTitle(title)
+
         self.ui_report.MplWidget.canvas.axes.clear()
-       # self.time_line = [1, 2, 3, 4]
-       # self.temp_line = [20, 150, 400, 450]
         self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
-        self.ui_report.MplWidget.canvas.axes.legend(u'Эталон', loc='lower center')
+        self.ui_report.MplWidget.canvas.axes.legend(u'Программа', loc='lower center')
         self.ui_report.MplWidget.canvas.draw()
         self.window_report.show()
 
@@ -385,7 +438,7 @@ class mywindow(QtWidgets.QMainWindow):
         if obj.objectName() == 'reportButton_8':
             return 8
 
-    def show_file_dialog(self):
+    def show_file_dialog(self, num):
         dialogSelectFiles = QFileDialog()
         dialogSelectFiles.setFileMode(QFileDialog.ExistingFiles)      # включение множественного выбора
 
@@ -393,6 +446,12 @@ class mywindow(QtWidgets.QMainWindow):
  
         data = dialogSelectFiles.selectedFiles()
         print(data)
+        print(num)
+        x, y = self.get_last_graph_points1(data)
+        print(x)
+        self.change_etalon_graph1(num)
+        self.update_report_graph(x, y)
+
 
     def update_port_settings(self, index):
         try:
@@ -1015,6 +1074,15 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.MplWidget_2.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
         self.ui.MplWidget_2.canvas.draw()
 
+    def update_report_graph(self, x, y):
+        self.ui_report.MplWidget.canvas.axes.clear()
+        # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        self.ui_report.MplWidget.canvas.axes.plot_date(x, y, '-')
+        self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
+        self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
+        self.ui_report.MplWidget.canvas.axes.legend('Программа', loc='lower center')
+        self.ui_report.MplWidget.canvas.draw()
+
     def update_tab_graph(self, index):
         # Считываем значения из файла 'graph.cfg'
         try:
@@ -1036,6 +1104,25 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.axes.legend(('Заданная', 'Реальная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
         self.plots[index].canvas.draw()
+
+    def get_last_graph_points1(self, files):
+        realtime_data_timeline = []
+        realtime_data_temperature = []
+        if files:
+            for file in files:
+                with open(file, 'r', newline='') as fp:
+                    reader = csv.reader(fp, delimiter=';')
+                    if reader:
+                        for row in reader:
+                            # timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
+                            # data = [int(row[1]), float(timeline)]
+                            realtime_data_timeline.append(row[0])
+                            realtime_data_temperature.append(int(row[1]))
+                    else:
+                        return []
+            return realtime_data_timeline, realtime_data_temperature
+        else:
+            return []
 
     def get_last_graph_points(self, num):
         # Извлекаем текущий месяц для проверки существует ли такая папка

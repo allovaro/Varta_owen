@@ -6,6 +6,7 @@ from PyQt5.QtSerialPort import QSerialPortInfo
 import time
 import os
 import csv
+import re
 
 
 class SerialWorker(QtCore.QObject):
@@ -36,9 +37,8 @@ class SerialWorker(QtCore.QObject):
             if self.serial_port.isOpen():
                 self.port_opened.emit('open')
                 try:
-                    data = self.serial_port.readline()
-                    self.currTemp.emit(data.decode('utf-8'))
-                    print(data.decode('utf-8'))
+                    data = self.serial_port.readline().decode("ascii")
+                    self.currTemp.emit(data)
                 except serial.SerialException:
                     self.serial_port.close()
                     self.port_opened.emit('close')
@@ -46,12 +46,25 @@ class SerialWorker(QtCore.QObject):
                     print('Port {} error'.format(self.port_name))
 
                 work_path = self.check_dir_path()  #  Проверяем существует ли папка с текущим днем если нет, то создаем
-                # file_name = self.last_file_name(600, work_path, self.owen_num)
-                # if file_name == '-1':  #  Проверка есть ли файл старше 15 минут
-                #     self.create_new_file(work_path)
-                # else:
-                #     self.add_new_data(work_path + '\\' + file_name, int(data))
-
+                file_name = self.last_file_name(600, work_path, self.owen_num)
+                if file_name == '-1':  #  Проверка есть ли файл старше 15 минут
+                    self.create_new_file(work_path)
+                else:
+                    # print(data)
+                    # convert_data = data.decode('ascii')
+                    # print(convert_data)
+                    dataa = '234'
+                    try:
+                        data_int = int(data)
+                        # print('True')
+                        self.add_new_data(work_path + '\\' + file_name, data_int)
+                    except:
+                        return False
+                    # if dataa.isdigit():
+                    #     print('Its digit')
+                    # if data.isdigit():
+                    #     print('True')
+                    #     self.add_new_data(work_path + '\\' + file_name, int(data))
             else:
                 self.port_opened.emit('close')
                 for inf in info:
@@ -106,8 +119,8 @@ class SerialWorker(QtCore.QObject):
                     min = int(file[-6:-4])
                     sec_file = hour * 3600 + min * 60
                     sec_time = numbers[3] * 3600 + numbers[4] * 60
-                    print('Minus{}', sec_time - sec_file)
-                    print('sec_file{}; sec_time{}', sec_file, sec_time)
+                    # print('Minus{}', sec_time - sec_file)
+                    # print('sec_file{}; sec_time{}', sec_file, sec_time)
                     if sec_file > sec_time - interval_secs:
                         return file
                     else:
@@ -130,7 +143,7 @@ class SerialWorker(QtCore.QObject):
         if numbers[1] < 10:
             name = name + '0' + str(numbers[1])
         else:
-            name += + str(numbers[1])
+            name += str(numbers[1])
         if numbers[2] < 10:
             name += '0' + str(numbers[2])
         else:
@@ -149,6 +162,8 @@ class SerialWorker(QtCore.QObject):
         f.close()
 
     def add_new_data(self, file, num):
+        print(file)
+        print(num)
         with open(file, 'a', newline='') as fp:
             writer = csv.writer(fp, delimiter=';')
             # writer.writerow([int(time.time()), num])  # write header

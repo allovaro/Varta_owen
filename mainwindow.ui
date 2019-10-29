@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>606</width>
-    <height>368</height>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -463,7 +463,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="tempLable_4">
+         <widget class="QLabel" name="tempLable_3">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -639,7 +639,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="tempLable_5">
+         <widget class="QLabel" name="tempLable_4">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -822,7 +822,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="tempLable_6">
+         <widget class="QLabel" name="tempLable_5">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -991,7 +991,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="tempLable_7">
+         <widget class="QLabel" name="tempLable_6">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -1160,7 +1160,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="tempLable_8">
+         <widget class="QLabel" name="tempLable_7">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -1329,7 +1329,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="tempLable_9">
+         <widget class="QLabel" name="tempLable_8">
           <property name="font">
            <font>
             <pointsize>10</pointsize>

@@ -112,36 +112,42 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.worker3.moveToThread(self.thread3)
         self.worker3.port_opened.connect(self.change_port_view)
+        self.worker3.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_3.setText(lines[10][:-1])
         self.thread3.started.connect(self.worker3.task)
         self.thread3.start()
 
         self.worker4.moveToThread(self.thread4)
         self.worker4.port_opened.connect(self.change_port_view)
+        self.worker4.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_4.setText(lines[15][:-1])
         self.thread4.started.connect(self.worker4.task)
         self.thread4.start()
 
         self.worker5.moveToThread(self.thread5)
         self.worker5.port_opened.connect(self.change_port_view)
+        self.worker5.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_5.setText(lines[20][:-1])
         self.thread5.started.connect(self.worker5.task)
         self.thread5.start()
 
         self.worker6.moveToThread(self.thread6)
         self.worker6.port_opened.connect(self.change_port_view)
+        self.worker6.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_6.setText(lines[25][:-1])
         self.thread6.started.connect(self.worker6.task)
         self.thread6.start()
 
         self.worker7.moveToThread(self.thread7)
         self.worker7.port_opened.connect(self.change_port_view)
+        self.worker7.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_7.setText(lines[30][:-1])
         self.thread7.started.connect(self.worker7.task)
         self.thread7.start()
 
         self.worker8.moveToThread(self.thread8)
         self.worker8.port_opened.connect(self.change_port_view)
+        self.worker8.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_8.setText(lines[35][:-1])
         self.thread8.started.connect(self.worker8.task)
         self.thread8.start()
@@ -192,6 +198,7 @@ class mywindow(QtWidgets.QMainWindow):
             if self.sender().owen_num == '1':
                 self.ui.statusLabel_1.setText('Закрыт')
                 self.ui.statusLabel_1.setStyleSheet('color: red')
+
             if self.sender().owen_num == '2':
                 self.ui.statusLabel_2.setText('Закрыт')
                 self.ui.statusLabel_2.setStyleSheet('color: red')

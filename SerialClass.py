@@ -38,6 +38,7 @@ class SerialWorker(QtCore.QObject):
                 self.port_opened.emit('open')
                 try:
                     data = self.serial_port.readline().decode("ascii")
+                    data = data.rstrip()
                     self.currTemp.emit(data)
                 except serial.SerialException:
                     self.serial_port.close()

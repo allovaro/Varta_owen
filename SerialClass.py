@@ -54,18 +54,11 @@ class SerialWorker(QtCore.QObject):
                     # print(data)
                     # convert_data = data.decode('ascii')
                     # print(convert_data)
-                    dataa = '234'
                     try:
                         data_int = int(data)
-                        # print('True')
                         self.add_new_data(work_path + '\\' + file_name, data_int)
                     except:
                         return False
-                    # if dataa.isdigit():
-                    #     print('Its digit')
-                    # if data.isdigit():
-                    #     print('True')
-                    #     self.add_new_data(work_path + '\\' + file_name, int(data))
             else:
                 self.port_opened.emit('close')
                 for inf in info:
@@ -124,12 +117,7 @@ class SerialWorker(QtCore.QObject):
                     # print('sec_file{}; sec_time{}', sec_file, sec_time)
                     if sec_file > sec_time - interval_secs:
                         return file
-                    else:
-                        return '-1'
-                else:
-                    return '-1'
-        else:
-            return '-1'
+        return '-1'
 
     def create_new_file(self, path):
         """
@@ -163,9 +151,8 @@ class SerialWorker(QtCore.QObject):
         f.close()
 
     def add_new_data(self, file, num):
-        print(file)
-        print(num)
         with open(file, 'a', newline='') as fp:
             writer = csv.writer(fp, delimiter=';')
             # writer.writerow([int(time.time()), num])  # write header
+            # writer.writerow([datetime.datetime.today(), num])
             writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])

@@ -20,6 +20,7 @@ from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as Navigati
 import numpy as np
 import random
 
+
 class mywindow(QtWidgets.QMainWindow):
     tray_icon = None
     etalon_temp = None
@@ -452,12 +453,13 @@ class mywindow(QtWidgets.QMainWindow):
         dialogSelectFiles.exec_()
  
         data = dialogSelectFiles.selectedFiles()
-        print(data)
-        print(num)
-        x, y = self.get_last_graph_points1(data)
-        print(x)
-        self.change_etalon_graph1(num)
-        self.update_report_graph(x, y)
+        if data:
+            # print(data)
+            # print(num)
+            x, y = self.get_last_graph_points1(data)
+            print(x)
+            self.change_etalon_graph1(num)
+            self.update_report_graph(x, y)
 
 
     def update_port_settings(self, index):
@@ -1083,7 +1085,7 @@ class mywindow(QtWidgets.QMainWindow):
 
     def update_report_graph(self, x, y):
         self.ui_report.MplWidget.canvas.axes.clear()
-        # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
         self.ui_report.MplWidget.canvas.axes.plot_date(x, y, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
@@ -1126,10 +1128,10 @@ class mywindow(QtWidgets.QMainWindow):
                             realtime_data_timeline.append(row[0])
                             realtime_data_temperature.append(int(row[1]))
                     else:
-                        return []
+                        return [[]]
             return realtime_data_timeline, realtime_data_temperature
         else:
-            return []
+            return [[]]
 
     def get_last_graph_points(self, num):
         # Извлекаем текущий месяц для проверки существует ли такая папка

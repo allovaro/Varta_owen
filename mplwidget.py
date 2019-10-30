@@ -18,7 +18,8 @@ class MplWidget(QWidget):
         vertical_layout = QVBoxLayout()
         vertical_layout.addWidget(self.canvas)
         
-        self.canvas.axes = self.canvas.figure.add_subplot(111)
+        self.canvas.axes = self.canvas.figure.add_subplot(111, autoscalex_on=True)
+        # self.canvas.axes = self.canvas.figure.set_autoscalex_on()
         self.setLayout(vertical_layout)
         # self.canvas.axes.legend(('cosinus1', 'sinus1'), loc='upper right')
         # self.canvas.axes.set_title('Cosinus - Sinus Signal')

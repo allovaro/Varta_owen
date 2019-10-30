@@ -16,7 +16,7 @@ import datetime as dt
 import serial
 from serial.tools.list_ports_windows import comports
 from SerialClass import SerialWorker
-
+import matplotlib.dates as md
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 import numpy as np
 import random
@@ -412,27 +412,42 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_about.show()
 
     def report_open(self):
-        print()
         self.window_report = QtWidgets.QMainWindow()
         self.ui_report = Ui_Report()
         self.ui_report.setupUi(self.window_report)
         owen_num = self.detect_report_owen(self.sender())
         self.ui_report.filesDialog.clicked.connect(lambda: self.show_file_dialog(owen_num))
-        self.change_etalon_graph1(owen_num)
+        self.change_etalon_graph1(owen_num, dt.datetime.today())
         title = 'Генератор отчета Печи №{}'.format(owen_num)
         self.window_report.setWindowTitle(title)
+        self.window_report.addToolBar(QtCore.Qt.BottomToolBarArea,
+                                      NavigationToolbar(self.ui_report.MplWidget.canvas, self))
 
+        # self.ui_report.MplWidget.canvas.axes.clear()
+        # # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        # time1 = [dt.datetime(2019, 10, 30, 16, 8, 1), dt.datetime(2019, 10, 30, 16, 15, 1), dt.datetime(2019, 10, 30, 16, 35, 1)]
+        # # time2 = [dt.datetime(2019, 10, 30, 16, 1), dt.datetime(2019, 10, 30, 16, 5), dt.datetime(2019, 10, 30, 16, 59)]
+        # value = [1, 45, 39]
+        # # value2 = [10, 46, 100]
+        # self.ui_report.MplWidget.canvas.axes.plot_date(time1, value, '-')
+        # # self.ui_report.MplWidget.canvas.axes.plot_date(time2, value2, '-')
+        # self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
+        # self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
+        # self.ui_report.MplWidget.canvas.axes.legend(u'Программа', loc='lower center')
+        # self.ui_report.MplWidget.canvas.draw()
+        self.time_line = self.change_etalon_graph1(owen_num, dt.datetime.today())
+        time1 = [dt.datetime(2019, 10, 30, 7, 4, 1), dt.datetime(2019, 10, 30, 16, 15, 1),
+                 dt.datetime(2019, 10, 30, 17, 35, 1), dt.datetime(2019, 10, 30, 17, 48, 1),
+                 dt.datetime(2019, 10, 30, 18, 0, 1)]
+        value1 = [12, 154, 256, 345, 777]
         self.ui_report.MplWidget.canvas.axes.clear()
-        # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
-        time1 = [dt.datetime(2019, 10, 30, 16, 8, 1), dt.datetime(2019, 10, 30, 16, 15, 1), dt.datetime(2019, 10, 30, 16, 35, 1)]
-        # time2 = [dt.datetime(2019, 10, 30, 16, 1), dt.datetime(2019, 10, 30, 16, 5), dt.datetime(2019, 10, 30, 16, 59)]
-        value = [1, 45, 39]
-        # value2 = [10, 46, 100]
-        self.ui_report.MplWidget.canvas.axes.plot_date(time1, value, '-')
-        # self.ui_report.MplWidget.canvas.axes.plot_date(time2, value2, '-')
+        self.ui_report.MplWidget.canvas.axes.plot_date(time1, value1, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
-        self.ui_report.MplWidget.canvas.axes.legend(u'Программа', loc='lower center')
+        self.ui_report.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M:%S'))
+        # self.ui_report.MplWidget.canvas.axes.autofmt_xdate()
+        # self.ui_report.MplWidget.canvas.get_xaxis().set_major_locator(mdates.MonthLocator(interval=4))
+        self.ui_report.MplWidget.canvas.axes.legend('Программа', loc='lower center')
         self.ui_report.MplWidget.canvas.draw()
         self.window_report.show()
 
@@ -457,16 +472,12 @@ class mywindow(QtWidgets.QMainWindow):
     def show_file_dialog(self, num):
         dialogSelectFiles = QFileDialog()
         dialogSelectFiles.setFileMode(QFileDialog.ExistingFiles)      # включение множественного выбора
-
         dialogSelectFiles.exec_()
- 
         data = dialogSelectFiles.selectedFiles()
         if data:
-            # print(data)
-            # print(num)
             x, y = self.get_last_graph_points2(data)
-            print(x)
-            # self.change_etalon_graph1(num)
+            # print(x)
+            self.change_etalon_graph1(num, dt.datetime.today())
             self.update_report_graph(x, y)
 
 
@@ -732,17 +743,30 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_graph.MplWidgetGraphEditor.canvas.axes.legend(u'Эталон', loc='lower center')
         self.ui_graph.MplWidgetGraphEditor.canvas.draw()
 
-    def change_etalon_graph1(self, owen_num):
+    def change_etalon_graph1(self, owen_num, dtime):
         try:
             with open('graph.cfg', 'r') as fr:
                 lines = fr.readlines()
                 self.temp_line = lines[owen_num * 2 - 2].split()
                 self.temp_line = list(map(float, self.temp_line))
-                self.time_line = lines[owen_num * 2 - 1].split()
-                self.time_line = list(map(float, self.time_line))
+                time_line1 = lines[owen_num * 2 - 1].split()
+                time_line = []
+                for one_line in time_line1:
+                    if one_line.find('.') != -1:
+                        line = dt.datetime(dtime.year, dtime.month, dtime.day,
+                                               int(one_line.split('.')[0]), int(one_line.split('.')[1]))
+                        time_line.append(line)
+                    else:
+                        line = dt.datetime(dtime.year, dtime.month, dtime.day,
+                                               int(one_line[0]), 0)
+                        time_line.append(line)
+                # self.time_line = list(map(float, self.time_line))
                 fr.close()
+                # print(self.time_line.year)
+                return time_line
         except FileNotFoundError:
             print('File graph.cfg not found')
+
 
     def change_etalon_graph(self, text):
         if text == 'Печь 1':
@@ -1093,11 +1117,11 @@ class mywindow(QtWidgets.QMainWindow):
 
     def update_report_graph(self, x, y):
         self.ui_report.MplWidget.canvas.axes.clear()
-        # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        self.ui_report.MplWidget.canvas.axes.plot_date(self.time_line, self.temp_line, '-')
         self.ui_report.MplWidget.canvas.axes.plot_date(x, y, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
-        self.ui_report.MplWidget.canvas.axes.legend('Программа', loc='lower center')
+        self.ui_report.MplWidget.canvas.axes.legend('Программа', 'Факт', loc='lower center')
         self.ui_report.MplWidget.canvas.draw()
 
     def update_tab_graph(self, index):
@@ -1123,11 +1147,12 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.draw()
 
 
-    def convert_time(self, my_time, datetime):
+    def convert_time(self, my_time, dtime):
         if my_time:
             time = my_time.split('.')
-            return dt.datetime(2019, 1, 1, time[0], time[1])
+            return dt.datetime(dtime.year, dtime.month, dtime.day, time[0], time[1])
         return 0
+
 
     def get_last_graph_points2(self, files):
         realtime_data_timeline = []
@@ -1147,6 +1172,7 @@ class mywindow(QtWidgets.QMainWindow):
             return realtime_data_timeline, realtime_data_temperature
         else:
             return [[]]
+
 
     def get_last_graph_points1(self, files):
         realtime_data_timeline = []

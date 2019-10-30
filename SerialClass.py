@@ -155,4 +155,6 @@ class SerialWorker(QtCore.QObject):
             writer = csv.writer(fp, delimiter=';')
             # writer.writerow([int(time.time()), num])  # write header
             # writer.writerow([datetime.datetime.today(), num])
-            writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])
+
+            writer.writerow([int(time.time()), num])
+            # writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])

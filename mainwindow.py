@@ -11,7 +11,8 @@ from about_ui import Ui_About
 from graph_ui import Ui_Graph_editor
 from report_ui import Ui_Report
 import sys, glob, os, csv
-import time
+import time as tm
+import datetime as dt
 import serial
 from serial.tools.list_ports_windows import comports
 from SerialClass import SerialWorker
@@ -411,6 +412,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_about.show()
 
     def report_open(self):
+        print()
         self.window_report = QtWidgets.QMainWindow()
         self.ui_report = Ui_Report()
         self.ui_report.setupUi(self.window_report)
@@ -421,7 +423,13 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_report.setWindowTitle(title)
 
         self.ui_report.MplWidget.canvas.axes.clear()
-        self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        time1 = [dt.datetime(2019, 10, 30, 16, 8, 1), dt.datetime(2019, 10, 30, 16, 15, 1), dt.datetime(2019, 10, 30, 16, 35, 1)]
+        # time2 = [dt.datetime(2019, 10, 30, 16, 1), dt.datetime(2019, 10, 30, 16, 5), dt.datetime(2019, 10, 30, 16, 59)]
+        value = [1, 45, 39]
+        # value2 = [10, 46, 100]
+        self.ui_report.MplWidget.canvas.axes.plot_date(time1, value, '-')
+        # self.ui_report.MplWidget.canvas.axes.plot_date(time2, value2, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
         self.ui_report.MplWidget.canvas.axes.legend(u'Программа', loc='lower center')
@@ -456,9 +464,9 @@ class mywindow(QtWidgets.QMainWindow):
         if data:
             # print(data)
             # print(num)
-            x, y = self.get_last_graph_points1(data)
+            x, y = self.get_last_graph_points2(data)
             print(x)
-            self.change_etalon_graph1(num)
+            # self.change_etalon_graph1(num)
             self.update_report_graph(x, y)
 
 
@@ -1085,7 +1093,7 @@ class mywindow(QtWidgets.QMainWindow):
 
     def update_report_graph(self, x, y):
         self.ui_report.MplWidget.canvas.axes.clear()
-        self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
+        # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
         self.ui_report.MplWidget.canvas.axes.plot_date(x, y, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
@@ -1113,6 +1121,32 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.axes.legend(('Заданная', 'Реальная'), loc='upper left')
         self.plots[index].canvas.axes.grid()
         self.plots[index].canvas.draw()
+
+
+    def convert_time(self, my_time, datetime):
+        if my_time:
+            time = my_time.split('.')
+            return dt.datetime(2019, 1, 1, time[0], time[1])
+        return 0
+
+    def get_last_graph_points2(self, files):
+        realtime_data_timeline = []
+        realtime_data_temperature = []
+        if files:
+            for file in files:
+                with open(file, 'r', newline='') as fp:
+                    reader = csv.reader(fp, delimiter=';')
+                    if reader:
+                        for row in reader:
+                            # timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
+                            # data = [int(row[1]), float(timeline)]
+                            realtime_data_timeline.append(dt.datetime.fromtimestamp(int(row[0])))
+                            realtime_data_temperature.append(int(row[1]))
+                    else:
+                        return [[]]
+            return realtime_data_timeline, realtime_data_temperature
+        else:
+            return [[]]
 
     def get_last_graph_points1(self, files):
         realtime_data_timeline = []

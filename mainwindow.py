@@ -422,32 +422,17 @@ class mywindow(QtWidgets.QMainWindow):
         self.window_report.setWindowTitle(title)
         self.window_report.addToolBar(QtCore.Qt.BottomToolBarArea,
                                       NavigationToolbar(self.ui_report.MplWidget.canvas, self))
-
-        # self.ui_report.MplWidget.canvas.axes.clear()
-        # # self.ui_report.MplWidget.canvas.axes.plot(self.time_line, self.temp_line, lw=2)
-        # time1 = [dt.datetime(2019, 10, 30, 16, 8, 1), dt.datetime(2019, 10, 30, 16, 15, 1), dt.datetime(2019, 10, 30, 16, 35, 1)]
-        # # time2 = [dt.datetime(2019, 10, 30, 16, 1), dt.datetime(2019, 10, 30, 16, 5), dt.datetime(2019, 10, 30, 16, 59)]
-        # value = [1, 45, 39]
-        # # value2 = [10, 46, 100]
-        # self.ui_report.MplWidget.canvas.axes.plot_date(time1, value, '-')
-        # # self.ui_report.MplWidget.canvas.axes.plot_date(time2, value2, '-')
-        # self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
-        # self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
-        # self.ui_report.MplWidget.canvas.axes.legend(u'Программа', loc='lower center')
-        # self.ui_report.MplWidget.canvas.draw()
+        time1 = [dt.timedelta(hours=3), dt.timedelta(hours=6), dt.timedelta(hours=25),
+                 dt.timedelta(hours=36), dt.timedelta(hours=42)]
+        values1 = [1, 23, 344, 656, 700]
         self.time_line = self.change_etalon_graph1(owen_num, dt.datetime.today())
-        time1 = [dt.datetime(2019, 10, 30, 7, 4, 1), dt.datetime(2019, 10, 30, 16, 15, 1),
-                 dt.datetime(2019, 10, 30, 17, 35, 1), dt.datetime(2019, 10, 30, 17, 48, 1),
-                 dt.datetime(2019, 10, 30, 18, 0, 1)]
-        value1 = [12, 154, 256, 345, 777]
         self.ui_report.MplWidget.canvas.axes.clear()
-        self.ui_report.MplWidget.canvas.axes.plot_date(time1, value1, '-')
+        self.ui_report.MplWidget.canvas.axes.plot(time1, values1, '-')
+        # self.ui_report.MplWidget.canvas.axes.plot_date(self.time_line, self.temp_line, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
-        self.ui_report.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M:%S'))
-        # self.ui_report.MplWidget.canvas.axes.autofmt_xdate()
-        # self.ui_report.MplWidget.canvas.get_xaxis().set_major_locator(mdates.MonthLocator(interval=4))
-        self.ui_report.MplWidget.canvas.axes.legend('Программа', loc='lower center')
+        self.ui_report.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M'))
+        self.ui_report.MplWidget.canvas.axes.legend(('Программа', 'Факт'), loc='upper right')
         self.ui_report.MplWidget.canvas.draw()
         self.window_report.show()
 
@@ -1121,7 +1106,8 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_report.MplWidget.canvas.axes.plot_date(x, y, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
-        self.ui_report.MplWidget.canvas.axes.legend('Программа', 'Факт', loc='lower center')
+        self.ui_report.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M'))
+        self.ui_report.MplWidget.canvas.axes.legend(('Программа', 'Факт'), loc='upper right')
         self.ui_report.MplWidget.canvas.draw()
 
     def update_tab_graph(self, index):
@@ -1146,13 +1132,14 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.axes.grid()
         self.plots[index].canvas.draw()
 
-
     def convert_time(self, my_time, dtime):
         if my_time:
             time = my_time.split('.')
-            return dt.datetime(dtime.year, dtime.month, dtime.day, time[0], time[1])
+            if int(time[0]) > 23 and (time[1]) > 59:
+                return dt.datetime(dtime.year, dtime.month, dtime.day + 1, int(time[0]), int(time[1]))
+            else:
+                return dt.datetime(dtime.year, dtime.month, dtime.day, int(time[0]), int(time[1]))
         return 0
-
 
     def get_last_graph_points2(self, files):
         realtime_data_timeline = []

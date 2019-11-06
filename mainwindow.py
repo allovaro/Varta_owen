@@ -31,6 +31,9 @@ class mywindow(QtWidgets.QMainWindow):
     port_lines = []
     time_line_current_tab = []
     temp_line_current_tab = []
+    report_offset = dt.timedelta()
+    x = []
+    y = []
     # serial_1 = QSerialPort(self)
     # myThread = SerialReadThread()
 
@@ -417,18 +420,22 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_report.setupUi(self.window_report)
         owen_num = self.detect_report_owen(self.sender())
         self.ui_report.filesDialog.clicked.connect(lambda: self.show_file_dialog(owen_num))
+        self.ui_report.moveLeftFast.clicked.connect(self.decrease_offset_fast)
+        self.ui_report.moveRightFast.clicked.connect(self.increase_offset_fast)
+        self.ui_report.moveLeftSlow.clicked.connect(self.decrease_offset_slow)
+        self.ui_report.moveRightSlow.clicked.connect(self.increase_offset_slow)
         self.change_etalon_graph1(owen_num, dt.datetime.today())
         title = 'Генератор отчета Печи №{}'.format(owen_num)
         self.window_report.setWindowTitle(title)
         self.window_report.addToolBar(QtCore.Qt.BottomToolBarArea,
                                       NavigationToolbar(self.ui_report.MplWidget.canvas, self))
-        time1 = [dt.timedelta(hours=3), dt.timedelta(hours=6), dt.timedelta(hours=25),
-                 dt.timedelta(hours=36), dt.timedelta(hours=42)]
-        values1 = [1, 23, 344, 656, 700]
+        # time1 = [dt.timedelta(hours=3), dt.timedelta(hours=6), dt.timedelta(hours=25),
+        #          dt.timedelta(hours=36), dt.timedelta(hours=42)]
+        # values1 = [1, 23, 344, 656, 700]
         self.time_line = self.change_etalon_graph1(owen_num, dt.datetime.today())
         self.ui_report.MplWidget.canvas.axes.clear()
-        self.ui_report.MplWidget.canvas.axes.plot(time1, values1, '-')
-        # self.ui_report.MplWidget.canvas.axes.plot_date(self.time_line, self.temp_line, '-')
+        # self.ui_report.MplWidget.canvas.axes.plot(time1, values1, '-')
+        self.ui_report.MplWidget.canvas.axes.plot_date(self.time_line, self.temp_line, '-')
         self.ui_report.MplWidget.canvas.axes.set_ylabel('Градусы, °С')
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
         self.ui_report.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M'))
@@ -436,7 +443,8 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_report.MplWidget.canvas.draw()
         self.window_report.show()
 
-    def detect_report_owen(self, obj):
+    @staticmethod
+    def detect_report_owen(obj):
         if obj.objectName() == 'reportButton_1':
             return 1
         if obj.objectName() == 'reportButton_2':
@@ -459,12 +467,40 @@ class mywindow(QtWidgets.QMainWindow):
         dialogSelectFiles.setFileMode(QFileDialog.ExistingFiles)      # включение множественного выбора
         dialogSelectFiles.exec_()
         data = dialogSelectFiles.selectedFiles()
+        self.report_offset = dt.timedelta()
         if data:
-            x, y = self.get_last_graph_points2(data)
+            self.x, self.y = self.get_last_graph_points2(data)
             # print(x)
-            self.change_etalon_graph1(num, dt.datetime.today())
-            self.update_report_graph(x, y)
+            self.change_etalon_graph1(num, self.x[0])
+            self.update_report_graph(self.x, self.y)
 
+    def decrease_offset_fast(self):
+        new_line = []
+        for item in self.time_line:
+            new_line.append(item + dt.timedelta(hours=1))
+        self.time_line = new_line
+        self.update_report_graph(self.x, self.y)
+
+    def increase_offset_fast(self):
+        new_line = []
+        for item in self.time_line:
+            new_line.append(item - dt.timedelta(hours=1))
+        self.time_line = new_line
+        self.update_report_graph(self.x, self.y)
+
+    def decrease_offset_slow(self):
+        new_line = []
+        for item in self.time_line:
+            new_line.append(item + dt.timedelta(minutes=5))
+        self.time_line = new_line
+        self.update_report_graph(self.x, self.y)
+
+    def increase_offset_slow(self):
+        new_line = []
+        for item in self.time_line:
+            new_line.append(item - dt.timedelta(minutes=5))
+        self.time_line = new_line
+        self.update_report_graph(self.x, self.y)
 
     def update_port_settings(self, index):
         try:
@@ -748,6 +784,7 @@ class mywindow(QtWidgets.QMainWindow):
                 # self.time_line = list(map(float, self.time_line))
                 fr.close()
                 # print(self.time_line.year)
+                self.time_line = time_line
                 return time_line
         except FileNotFoundError:
             print('File graph.cfg not found')
@@ -1108,6 +1145,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_report.MplWidget.canvas.axes.set_xlabel('Время, ч')
         self.ui_report.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M'))
         self.ui_report.MplWidget.canvas.axes.legend(('Программа', 'Факт'), loc='upper right')
+        self.ui_report.MplWidget.canvas.axes.grid()
         self.ui_report.MplWidget.canvas.draw()
 
     def update_tab_graph(self, index):

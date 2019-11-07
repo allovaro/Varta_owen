@@ -1,25 +1,20 @@
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
-from PyQt5.QtSerialPort import QSerialPort
-from PyQt5.QtCore import QThread, QRegExp
+from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtWidgets import QSystemTrayIcon, QStyle, QAction, QMenu, qApp, QFileDialog
+from PyQt5.QtWidgets import QSystemTrayIcon, QAction, QMenu, qApp, QFileDialog
 from mainwindow_ui import Ui_MainWindow  # импорт нашего сгенерированного файла
 from port_parameters_ui import Ui_Form
 from about_ui import Ui_About
 from graph_ui import Ui_Graph_editor
 from report_ui import Ui_Report
 import sys, glob, os, csv
-import time as tm
 import datetime as dt
-import serial
 from serial.tools.list_ports_windows import comports
 from SerialClass import SerialWorker
 import matplotlib.dates as md
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
-import numpy as np
-import random
 
 
 class mywindow(QtWidgets.QMainWindow):
@@ -717,7 +712,7 @@ class mywindow(QtWidgets.QMainWindow):
         try:
             with open('graph.cfg', 'r') as file:
                 lines = file.readlines()
-                lines_len = len(lines)
+                # lines_len = len(lines)
         except FileNotFoundError:
             print('File graph.cfg not found')
 
@@ -781,14 +776,11 @@ class mywindow(QtWidgets.QMainWindow):
                         line = dt.datetime(dtime.year, dtime.month, dtime.day,
                                                int(one_line[0]), 0)
                         time_line.append(line)
-                # self.time_line = list(map(float, self.time_line))
                 fr.close()
-                # print(self.time_line.year)
                 self.time_line = time_line
                 return time_line
         except FileNotFoundError:
             print('File graph.cfg not found')
-
 
     def change_etalon_graph(self, text):
         if text == 'Печь 1':
@@ -1117,25 +1109,25 @@ class mywindow(QtWidgets.QMainWindow):
         else:
             self.ui_graph.lineEditTime24.setText('')
 
-    def update_graph(self):
-        fs = 500
-        f = random.randint(1, 100)
-        ts = 1 / fs
-        length_of_signal = 100
-        t = np.linspace(0, 1, length_of_signal)
-
-        cosinus_signal = np.cos(2 * np.pi * f * t)
-        sinus_signal = np.sin(2 * np.pi * f * t)
-        self.ui.MplWidget_1.canvas.axes.clear()
-        self.ui.MplWidget_1.canvas.axes.plot(t, cosinus_signal)
-        self.ui.MplWidget_1.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
-        self.ui.MplWidget_1.canvas.draw()
-
-        self.ui.MplWidget_2.canvas.axes.clear()
-        self.ui.MplWidget_2.canvas.axes.plot(t, cosinus_signal)
-        self.ui.MplWidget_2.canvas.axes.plot(t, sinus_signal)
-        self.ui.MplWidget_2.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
-        self.ui.MplWidget_2.canvas.draw()
+    # def update_graph(self):
+    #     fs = 500
+    #     f = random.randint(1, 100)
+    #     ts = 1 / fs
+    #     length_of_signal = 100
+    #     t = np.linspace(0, 1, length_of_signal)
+    #
+    #     cosinus_signal = np.cos(2 * np.pi * f * t)
+    #     sinus_signal = np.sin(2 * np.pi * f * t)
+    #     self.ui.MplWidget_1.canvas.axes.clear()
+    #     self.ui.MplWidget_1.canvas.axes.plot(t, cosinus_signal)
+    #     self.ui.MplWidget_1.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
+    #     self.ui.MplWidget_1.canvas.draw()
+    #
+    #     self.ui.MplWidget_2.canvas.axes.clear()
+    #     self.ui.MplWidget_2.canvas.axes.plot(t, cosinus_signal)
+    #     self.ui.MplWidget_2.canvas.axes.plot(t, sinus_signal)
+    #     self.ui.MplWidget_2.canvas.axes.legend(('Реальная', 'Заданная'), loc='upper right')
+    #     self.ui.MplWidget_2.canvas.draw()
 
     def update_report_graph(self, x, y):
         self.ui_report.MplWidget.canvas.axes.clear()
@@ -1170,6 +1162,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.plots[index].canvas.axes.grid()
         self.plots[index].canvas.draw()
 
+    @staticmethod
     def convert_time(self, my_time, dtime):
         if my_time:
             time = my_time.split('.')
@@ -1179,7 +1172,8 @@ class mywindow(QtWidgets.QMainWindow):
                 return dt.datetime(dtime.year, dtime.month, dtime.day, int(time[0]), int(time[1]))
         return 0
 
-    def get_last_graph_points2(self, files):
+    @staticmethod
+    def get_last_graph_points2(files):
         realtime_data_timeline = []
         realtime_data_temperature = []
         if files:
@@ -1198,64 +1192,59 @@ class mywindow(QtWidgets.QMainWindow):
         else:
             return [[]]
 
+    # @staticmethod
+    # def get_last_graph_points1(files):
+    #     realtime_data_timeline = []
+    #     realtime_data_temperature = []
+    #     if files:
+    #         for file in files:
+    #             with open(file, 'r', newline='') as fp:
+    #                 reader = csv.reader(fp, delimiter=';')
+    #                 if reader:
+    #                     for row in reader:
+    #                         # timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
+    #                         # data = [int(row[1]), float(timeline)]
+    #                         realtime_data_timeline.append(row[0])
+    #                         realtime_data_temperature.append(int(row[1]))
+    #                 else:
+    #                     return [[]]
+    #         return realtime_data_timeline, realtime_data_temperature
+    #     else:
+    #         return [[]]
 
-    def get_last_graph_points1(self, files):
-        realtime_data_timeline = []
-        realtime_data_temperature = []
-        if files:
-            for file in files:
-                with open(file, 'r', newline='') as fp:
-                    reader = csv.reader(fp, delimiter=';')
-                    if reader:
-                        for row in reader:
-                            # timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
-                            # data = [int(row[1]), float(timeline)]
-                            realtime_data_timeline.append(row[0])
-                            realtime_data_temperature.append(int(row[1]))
-                    else:
-                        return [[]]
-            return realtime_data_timeline, realtime_data_temperature
-        else:
-            return [[]]
-
-    def get_last_graph_points(self, num):
-        # Извлекаем текущий месяц для проверки существует ли такая папка
-        time_current = time.strftime("%Y,%m,%d,%H,%M,%S")
-        t = time_current.split(',')
-        numbers = [int(x) for x in t]
-        # Проверяем есть ли такая папка если нет, то создаем ее
-        if os.path.isdir(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])):
-            path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
-        else:
-            os.makedirs(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2]))
-            path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
-
-        file_names = glob.glob1(path, "owen" + str(num) + "*")
-        print('Files count:{}', len(file_names))
-        realtime_data_timeline = []
-        realtime_data_temperature = []
-
-        if file_names:
-            for file in file_names:
-                with open(path + '\\' + file, 'r', newline='') as fp:
-                    reader = csv.reader(fp, delimiter=';')
-                    if reader:
-                        for row in reader:
-                            # timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
-                            # data = [int(row[1]), float(timeline)]
-                            realtime_data_timeline.append(row[0])
-                            realtime_data_temperature.append(int(row[1]))
-                    else:
-                        return []
-            return realtime_data_timeline, realtime_data_temperature
-        else:
-            return []
-
-
-        # преобразование временной метки в часы,минуты
-        # time.strftime("%H,%M", time.localtime(int("1560878283")))
-        # print(realtime_data[-1][0])
-        # print(realtime_data[-1][1])
+    # @staticmethod
+    # def get_last_graph_points(self, num):
+    #     # Извлекаем текущий месяц для проверки существует ли такая папка
+    #     time_current = time.strftime("%Y,%m,%d,%H,%M,%S")
+    #     t = time_current.split(',')
+    #     numbers = [int(x) for x in t]
+    #     # Проверяем есть ли такая папка если нет, то создаем ее
+    #     if os.path.isdir(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])):
+    #         path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
+    #     else:
+    #         os.makedirs(r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2]))
+    #         path = r'.\dat' + '\\' + str(numbers[1]) + '\\' + str(numbers[2])
+    #
+    #     file_names = glob.glob1(path, "owen" + str(num) + "*")
+    #     print('Files count:{}', len(file_names))
+    #     realtime_data_timeline = []
+    #     realtime_data_temperature = []
+    #
+    #     if file_names:
+    #         for file in file_names:
+    #             with open(path + '\\' + file, 'r', newline='') as fp:
+    #                 reader = csv.reader(fp, delimiter=';')
+    #                 if reader:
+    #                     for row in reader:
+    #                         # timeline = time.strftime("%H.%M", time.localtime(int(row[0])))
+    #                         # data = [int(row[1]), float(timeline)]
+    #                         realtime_data_timeline.append(row[0])
+    #                         realtime_data_temperature.append(int(row[1]))
+    #                 else:
+    #                     return []
+    #         return realtime_data_timeline, realtime_data_temperature
+    #     else:
+    #         return []
 
 
 def main():

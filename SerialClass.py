@@ -17,7 +17,6 @@ class SerialWorker(QtCore.QObject):
     port_opened = pyqtSignal(str)
     currTemp = pyqtSignal(str)
 
-
     def __init__(self, owen_num, port_name='', baudrate=9600):
         QtCore.QObject.__init__(self)
         self.port_name = port_name
@@ -51,9 +50,6 @@ class SerialWorker(QtCore.QObject):
                 if file_name == '-1':  #  Проверка есть ли файл старше 15 минут
                     self.create_new_file(work_path)
                 else:
-                    # print(data)
-                    # convert_data = data.decode('ascii')
-                    # print(convert_data)
                     try:
                         data_int = int(data)
                         self.add_new_data(work_path + '\\' + file_name, data_int)

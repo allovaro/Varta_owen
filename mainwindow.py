@@ -98,6 +98,7 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.worker1.moveToThread(self.thread1)
         self.worker1.port_opened.connect(self.change_port_view)
+        self.ui.statusLabel_1.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.worker1.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_1.setText(lines[0][:-1])
         self.thread1.started.connect(self.worker1.task)
@@ -105,6 +106,7 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.worker2.moveToThread(self.thread2)
         self.worker2.port_opened.connect(self.change_port_view)
+        self.ui.statusLabel_2.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.worker2.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_2.setText(lines[5][:-1])
         self.thread2.started.connect(self.worker2.task)
@@ -113,6 +115,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker3.moveToThread(self.thread3)
         self.worker3.port_opened.connect(self.change_port_view)
         self.worker3.currTemp.connect(self.change_temp_in_mainwindow)
+        self.ui.statusLabel_3.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_3.setText(lines[10][:-1])
         self.thread3.started.connect(self.worker3.task)
         self.thread3.start()
@@ -120,6 +123,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker4.moveToThread(self.thread4)
         self.worker4.port_opened.connect(self.change_port_view)
         self.worker4.currTemp.connect(self.change_temp_in_mainwindow)
+        self.ui.statusLabel_4.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_4.setText(lines[15][:-1])
         self.thread4.started.connect(self.worker4.task)
         self.thread4.start()
@@ -127,6 +131,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker5.moveToThread(self.thread5)
         self.worker5.port_opened.connect(self.change_port_view)
         self.worker5.currTemp.connect(self.change_temp_in_mainwindow)
+        self.ui.statusLabel_5.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_5.setText(lines[20][:-1])
         self.thread5.started.connect(self.worker5.task)
         self.thread5.start()
@@ -134,6 +139,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker6.moveToThread(self.thread6)
         self.worker6.port_opened.connect(self.change_port_view)
         self.worker6.currTemp.connect(self.change_temp_in_mainwindow)
+        self.ui.statusLabel_6.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_6.setText(lines[25][:-1])
         self.thread6.started.connect(self.worker6.task)
         self.thread6.start()
@@ -141,6 +147,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker7.moveToThread(self.thread7)
         self.worker7.port_opened.connect(self.change_port_view)
         self.worker7.currTemp.connect(self.change_temp_in_mainwindow)
+        self.ui.statusLabel_7.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_7.setText(lines[30][:-1])
         self.thread7.started.connect(self.worker7.task)
         self.thread7.start()
@@ -148,6 +155,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker8.moveToThread(self.thread8)
         self.worker8.port_opened.connect(self.change_port_view)
         self.worker8.currTemp.connect(self.change_temp_in_mainwindow)
+        self.ui.statusLabel_8.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_8.setText(lines[35][:-1])
         self.thread8.started.connect(self.worker8.task)
         self.thread8.start()
@@ -305,10 +313,13 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_graph.lineEditTime23.editingFinished.connect(self.update_etalon_graph)
         self.ui_graph.lineEditTime24.editingFinished.connect(self.update_etalon_graph)
 
-        timeRange = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"  # Part of the regular expression
+        tempRange = "(?:[0-9]?[0-9]?[0-9]?[0-9])"  # Part of the regular expression
+        timeRangeHours = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"  # Part of the regular expression
+        timeRangeHours = "(?:[0-8]?[0-9]|9[0-6])"  # Part of the regular expression
+        timeRangeMinutes = "(?:[0-5])"  # Part of the regular expression
         # Regulare expression
-        timeRegex = QRegExp("^" + timeRange + "\\." + timeRange + "$")
-        tempRegex = QRegExp("^\d{1,4}$")
+        timeRegex = QRegExp("^" + timeRangeHours + "\\." + timeRangeMinutes + "$")
+        tempRegex = QRegExp("^" + tempRange)
         timeValidator = QRegExpValidator(timeRegex, self)
         tempValidator = QRegExpValidator(tempRegex, self)
         self.ui_graph.lineEditTime1.setValidator(timeValidator)
@@ -769,8 +780,20 @@ class mywindow(QtWidgets.QMainWindow):
                 time_line = []
                 for one_line in time_line1:
                     if one_line.find('.') != -1:
-                        line = dt.datetime(dtime.year, dtime.month, dtime.day,
-                                               int(one_line.split('.')[0]), int(one_line.split('.')[1]))
+                        hours = int(one_line.split('.')[0])
+                        minutes = int(one_line.split('.')[1])
+                        if hours < 24:
+                            line = dt.datetime(dtime.year, dtime.month, dtime.day,
+                                               hours, minutes)
+                        elif 23 < hours < 48:
+                            line = dt.datetime(dtime.year, dtime.month, dtime.day + 1,
+                                               hours - 24, minutes)
+                        elif 48 < hours < 72:
+                            line = dt.datetime(dtime.year, dtime.month, dtime.day + 1,
+                                               hours - 48, minutes)
+                        elif 72 < hours < 96:
+                            line = dt.datetime(dtime.year, dtime.month, dtime.day + 1,
+                                               hours - 72, minutes)
                         time_line.append(line)
                     else:
                         line = dt.datetime(dtime.year, dtime.month, dtime.day,

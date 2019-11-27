@@ -30,7 +30,7 @@
     <activeon>lines.png</activeon>
    </iconset>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -498,6 +498,12 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string notr="true">max 9999</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>-1</number>
+                </property>
                </widget>
               </item>
               <item>
@@ -513,6 +519,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -530,6 +539,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -545,6 +557,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -562,6 +577,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -577,6 +595,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -594,6 +615,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -609,6 +633,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -626,6 +653,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -641,6 +671,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -658,6 +691,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -673,6 +709,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -690,6 +729,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -705,6 +747,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -722,6 +767,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -737,6 +785,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -754,6 +805,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -769,6 +823,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -786,6 +843,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -801,6 +861,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -818,6 +881,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -833,6 +899,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -850,6 +919,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -865,6 +937,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 9999</string>
                 </property>
                </widget>
               </item>
@@ -886,6 +961,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string notr="true">max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -901,6 +979,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -918,6 +999,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -933,6 +1017,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -950,6 +1037,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -965,6 +1055,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -982,6 +1075,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -997,6 +1093,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1014,6 +1113,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1029,6 +1131,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1046,6 +1151,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1061,6 +1169,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1078,6 +1189,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1093,6 +1207,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1110,6 +1227,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1125,6 +1245,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1142,6 +1265,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1157,6 +1283,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1174,6 +1303,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1189,6 +1321,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1206,6 +1341,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1221,6 +1359,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1238,6 +1379,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1253,6 +1397,9 @@
                   <width>70</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="toolTip">
+                 <string>max 96.0</string>
                 </property>
                </widget>
               </item>
@@ -1271,6 +1418,12 @@
           <width>620</width>
           <height>651</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="toolTipDuration">
+         <number>3</number>
         </property>
        </widget>
       </item>

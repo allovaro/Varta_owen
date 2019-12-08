@@ -532,9 +532,6 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui_notifications.Number1.setValidator(timeValidator)
         self.ui_notifications.Number2.setValidator(timeValidator)
         self.ui_notifications.Number3.setValidator(timeValidator)
-        self.ui_notifications.Number1.setText('')
-        self.ui_notifications.Number2.setText('')
-        self.ui_notifications.Number3.setText('')
         try:
             with open('smsc.cfg', 'r') as fr:
                 lines = fr.readlines()

@@ -6,8 +6,7 @@ from PyQt5.QtSerialPort import QSerialPortInfo
 import time
 import os
 import csv
-import re
-
+from smsc_api import *
 
 class SerialWorker(QtCore.QObject):
     """
@@ -16,6 +15,7 @@ class SerialWorker(QtCore.QObject):
     """
     port_opened = pyqtSignal(str)
     currTemp = pyqtSignal(str)
+    smsc = SMSC()
 
     def __init__(self, owen_num, port_name='', baudrate=9600):
         QtCore.QObject.__init__(self)
@@ -30,6 +30,9 @@ class SerialWorker(QtCore.QObject):
         пишет температуру в отдельный файл. разбивает по месяцам и дням.
         :return:
         """
+        # if self.owen_num == '1':
+            # print(self.smsc.get_balance())
+            # self.smsc.send_sms("79064168910", "Привет от варты", sender="sms")
         while True:
             time.sleep(1)
             info = QSerialPortInfo.availablePorts()

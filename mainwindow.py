@@ -9,12 +9,14 @@ from port_parameters_ui import Ui_Form
 from about_ui import Ui_About
 from graph_ui import Ui_Graph_editor
 from report_ui import Ui_Report
+from notification_ui import Ui_Notification
 import sys, glob, os, csv
 import datetime as dt
 from serial.tools.list_ports_windows import comports
 from SerialClass import SerialWorker
 import matplotlib.dates as md
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
+from smsc_api import *
 
 
 class mywindow(QtWidgets.QMainWindow):
@@ -29,6 +31,10 @@ class mywindow(QtWidgets.QMainWindow):
     report_offset = dt.timedelta()
     x = []
     y = []
+    window_notification = None
+    ui_notifications = None
+    smsc = SMSC()
+
     # serial_1 = QSerialPort(self)
     # myThread = SerialReadThread()
 
@@ -53,6 +59,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.ports.triggered.connect(self.ports_open)
         self.ui.graph.triggered.connect(self.graph_open)
         self.ui.About.triggered.connect(self.about_open)
+        self.ui.events.triggered.connect(self.notification_open)
         self.ui.reportButton_1.clicked.connect(self.report_open)
         self.ui.reportButton_2.clicked.connect(self.report_open)
         self.ui.reportButton_3.clicked.connect(self.report_open)
@@ -507,6 +514,127 @@ class mywindow(QtWidgets.QMainWindow):
             new_line.append(item - dt.timedelta(minutes=5))
         self.time_line = new_line
         self.update_report_graph(self.x, self.y)
+
+    def notification_open(self):
+        self.window_notification = QtWidgets.QMainWindow()
+        self.ui_notifications = Ui_Notification()
+        self.ui_notifications.setupUi(self.window_notification)
+        self.window_notification.show()
+        self.ui_notifications.LoginLabel.editingFinished.connect(self.change_login_field)
+        self.ui_notifications.PasswordLabel.editingFinished.connect(self.change_pass_field)
+        self.ui_notifications.Number1.editingFinished.connect(self.change_number1_field)
+        self.ui_notifications.Number2.editingFinished.connect(self.change_number2_field)
+        self.ui_notifications.Number3.editingFinished.connect(self.change_number3_field)
+        numbersRange = "(?:[7-7]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9])"  # Part of the regular expression
+        # Regulare expression
+        numberRegex = QRegExp("^" + numbersRange)
+        timeValidator = QRegExpValidator(numberRegex, self)
+        self.ui_notifications.Number1.setValidator(timeValidator)
+        self.ui_notifications.Number2.setValidator(timeValidator)
+        self.ui_notifications.Number3.setValidator(timeValidator)
+        self.ui_notifications.Number1.setText('')
+        self.ui_notifications.Number2.setText('')
+        self.ui_notifications.Number3.setText('')
+        try:
+            with open('smsc.cfg', 'r') as fr:
+                lines = fr.readlines()
+                self.ui_notifications.LoginLabel.setText(lines[0].replace('\n', ''))
+                print(lines[0].replace('\n', ''))
+                self.ui_notifications.PasswordLabel.setText(lines[1].replace('\n', ''))
+                self.ui_notifications.Number1.setText(lines[2].replace('\n', ''))
+                self.ui_notifications.Number2.setText(lines[3].replace('\n', ''))
+                self.ui_notifications.Number3.setText(lines[4].replace('\n', ''))
+                fr.close()
+        except FileNotFoundError:
+            print('File smsc.cfg not found')
+            with open('smsc.cfg', 'w') as fr:
+                for i in range(10):
+                    fr.write('\n')
+                fr.close()
+        self.smsc.SMSC_LOGIN = self.ui_notifications.LoginLabel.text().replace('\n', '')
+        self.smsc.SMSC_PASSWORD = self.ui_notifications.PasswordLabel.text().replace('\n', '')
+        ret = self.smsc.get_balance()
+        if ret:
+            self.ui_notifications.BalanceCount.setText(ret + 'р')
+            self.ui_notifications.BalanceCount.setStyleSheet('color: black')
+        else:
+            self.ui_notifications.BalanceCount.setText('_._р')
+            self.ui_notifications.BalanceCount.setStyleSheet('color: red')
+
+    def change_login_field(self):
+        try:
+            with open('smsc.cfg', 'r') as fr:
+                lines = fr.readlines()
+                fr.close()
+            with open('smsc.cfg', 'w') as fw:
+                if self.ui_notifications.LoginLabel.text().find('\n') == -1:
+                    lines[0] = self.ui_notifications.LoginLabel.text() + '\n'
+                else:
+                    lines[0] = self.ui_notifications.LoginLabel.text()
+                fw.writelines(lines)
+                fw.close()
+        except FileNotFoundError:
+            print('File smsc.cfg not found')
+
+    def change_pass_field(self):
+        try:
+            with open('smsc.cfg', 'r') as fr:
+                lines = fr.readlines()
+                fr.close()
+            with open('smsc.cfg', 'w') as fw:
+                if self.ui_notifications.PasswordLabel.text().find('\n') == -1:
+                    lines[1] = self.ui_notifications.PasswordLabel.text() + '\n'
+                else:
+                    lines[1] = self.ui_notifications.PasswordLabel.text()
+                fw.writelines(lines)
+                fw.close()
+        except FileNotFoundError:
+            print('File smsc.cfg not found')
+
+    def change_number1_field(self):
+        try:
+            with open('smsc.cfg', 'r') as fr:
+                lines = fr.readlines()
+                fr.close()
+            with open('smsc.cfg', 'w') as fw:
+                if self.ui_notifications.Number1.text().find('\n') == -1:
+                    lines[2] = self.ui_notifications.Number1.text() + '\n'
+                else:
+                    lines[2] = self.ui_notifications.Number1.text()
+                fw.writelines(lines)
+                fw.close()
+        except FileNotFoundError:
+            print('File smsc.cfg not found')
+
+    def change_number2_field(self):
+        try:
+            with open('smsc.cfg', 'r') as fr:
+                lines = fr.readlines()
+                fr.close()
+            with open('smsc.cfg', 'w') as fw:
+                if self.ui_notifications.Number2.text().find('\n') == -1:
+                    lines[3] = self.ui_notifications.Number2.text() + '\n'
+                else:
+                    lines[3] = self.ui_notifications.Number2.text()
+                fw.writelines(lines)
+                fw.close()
+        except FileNotFoundError:
+            print('File smsc.cfg not found')
+
+    def change_number3_field(self):
+        try:
+            with open('smsc.cfg', 'r') as fr:
+                lines = fr.readlines()
+                fr.close()
+            with open('smsc.cfg', 'w') as fw:
+                if self.ui_notifications.Number3.text().find('\n') == -1:
+                    lines[4] = self.ui_notifications.Number3.text() + '\n'
+                else:
+                    lines[4] = self.ui_notifications.Number3.text()
+                fw.writelines(lines)
+                fw.close()
+        except FileNotFoundError:
+            print('File smsc.cfg not found')
 
     def update_port_settings(self, index):
         try:

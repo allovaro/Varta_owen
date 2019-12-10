@@ -20,7 +20,6 @@ class Analyzer(object):
 
     def add_new_value(self, new_value):
         if self.temperature_memory:
-
             if new_value == self.get_last_value():
                 if len(self.temperature_memory) < 15:
                     self.temperature_memory.append(new_value)
@@ -34,8 +33,37 @@ class Analyzer(object):
     def get_last_value(self):
         return self.temperature_memory[-1]
 
+    @staticmethod
+    def find_points(file_name, owen_num, current_val):
+        try:
+            with open(file_name, 'r') as file:
+                for i in range(owen_num * 2 - 1):
+                    line = file.readline()
+                if line:
+                    array = list(map(float, line.split(' ')))
+        except FileNotFoundError:
+            print('File graph.cfg not found')
+        point1 = 0
+        point2 = 0
+        point3 = -1
+        point4 = -1
+        for i in range(len(array)):
+            if i < len(array) - 1:
+                if array[i] <= current_val <= array[i + 1]:
+                    point1 = array[i]
+                    point2 = array[i + 1]
+        for i in reversed(range(len(array))):
+            if i > 0:
+                if array[i] <= current_val <= array[i - 1]:
+                    point3 = array[i]
+                    point4 = array[i - 1]
+        if point1 == point4 and point2 == point3:
+            return point1, point2, -1, -1
+        else:
+            return point1, point2, point3, point4
+        return False
+
+
 analyz = Analyzer()
-for i in range(78):
-    analyz.add_new_value(i + 3)
-print(analyz.temperature_memory)
-print(len(analyz.temperature_memory))
+print(analyz.find_points('graph.cfg', 3, 20))
+

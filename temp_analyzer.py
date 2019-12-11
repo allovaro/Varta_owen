@@ -1,4 +1,4 @@
-
+import datetime as dt
 
 class Analyzer(object):
     temperature_direction = None
@@ -20,7 +20,7 @@ class Analyzer(object):
 
     def add_new_value(self, new_value):
         if self.temperature_memory:
-            if new_value == self.get_last_value():
+            if new_value != self.get_last_value():
                 if len(self.temperature_memory) < 15:
                     self.temperature_memory.append(new_value)
                 else:
@@ -29,6 +29,32 @@ class Analyzer(object):
         else:
             self.temperature_memory.append(new_value)
         # print(len(self.temperature_memory))
+
+    @staticmethod
+    def find_and_add_check_point(curr_value, next_check_point):
+        if next_check_point - 10 <= curr_value <= next_check_point:
+            return curr_value, dt.datetime.today()
+
+    @staticmethod
+    def calc_next_timestamp(time1, time2, timestamp):
+        """
+        Функция вычисляет смещение второй опорной точки для построения графика прямой
+        по двух точкам.
+        return: Объект типа время
+        """
+        temp = time1.split('.')
+        mins = 0
+        mins2 = 0
+        if len(temp) >= 2:
+            mins = int(temp[0]) * 60 + int(temp[1]) * 10
+        temp = time2.split('.')
+        if len(temp) >= 2:
+            mins2 = int(temp[0]) * 60 + int(temp[1]) * 10
+        if mins != 0 and mins2 != 0:
+            return timestamp + dt.timedelta(minutes=(mins2 - mins))
+        else:
+            return 0
+
 
     def get_last_value(self):
         return self.temperature_memory[-1]
@@ -63,7 +89,15 @@ class Analyzer(object):
             return point1, point2, point3, point4
         return False
 
+    def is_temp_changes(self):
+        if self.temperature_memory:
+            if abs(self.temperature_memory[-1] - self.temperature_memory[0]) > 10:
+                return True
+            else:
+                return False
+
 
 analyz = Analyzer()
-print(analyz.find_points('graph.cfg', 3, 20))
+print(dt.datetime.today())
+print(analyz.calc_next_timestamp('1.0', '2.0', dt.datetime.today()))
 

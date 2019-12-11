@@ -6,6 +6,7 @@ from PyQt5.QtSerialPort import QSerialPortInfo
 import time
 import os
 import csv
+from temp_analyzer import *
 from smsc_api import *
 
 class SerialWorker(QtCore.QObject):
@@ -16,6 +17,7 @@ class SerialWorker(QtCore.QObject):
     port_opened = pyqtSignal(str)
     currTemp = pyqtSignal(str)
     smsc = SMSC()
+    analyzer = Analyzer()
 
     def __init__(self, owen_num, port_name='', baudrate=9600):
         QtCore.QObject.__init__(self)
@@ -56,6 +58,7 @@ class SerialWorker(QtCore.QObject):
                     try:
                         data_int = int(data)
                         self.add_new_data(work_path + '\\' + file_name, data_int)
+                        analyz.add_new_value(data_int)
                     except:
                         return False
             else:

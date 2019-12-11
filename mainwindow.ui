@@ -1086,7 +1086,7 @@
         </widget>
        </item>
        <item row="3" column="0">
-        <widget class="QPushButton" name="pushButton_7">
+        <widget class="QPushButton" name="notificationButton_7">
          <property name="font">
           <font>
            <pointsize>10</pointsize>

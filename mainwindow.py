@@ -108,6 +108,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.statusLabel_1.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.worker1.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_1.setText(lines[0][:-1])
+        self.ui.notificationButton_1.clicked.connect(self.detect_notification_owen)
         self.thread1.started.connect(self.worker1.task)
         self.thread1.start()
 
@@ -116,6 +117,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.statusLabel_2.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.worker2.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.portNumber_2.setText(lines[5][:-1])
+        self.ui.notificationButton_2.clicked.connect(self.detect_notification_owen)
         self.thread2.started.connect(self.worker2.task)
         self.thread2.start()
 
@@ -124,6 +126,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker3.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.statusLabel_3.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_3.setText(lines[10][:-1])
+        self.ui.notificationButton_3.clicked.connect(self.detect_notification_owen)
         self.thread3.started.connect(self.worker3.task)
         self.thread3.start()
 
@@ -132,6 +135,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker4.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.statusLabel_4.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_4.setText(lines[15][:-1])
+        self.ui.notificationButton_4.clicked.connect(self.detect_notification_owen)
         self.thread4.started.connect(self.worker4.task)
         self.thread4.start()
 
@@ -140,6 +144,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker5.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.statusLabel_5.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_5.setText(lines[20][:-1])
+        self.ui.notificationButton_5.clicked.connect(self.detect_notification_owen)
         self.thread5.started.connect(self.worker5.task)
         self.thread5.start()
 
@@ -148,6 +153,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker6.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.statusLabel_6.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_6.setText(lines[25][:-1])
+        self.ui.notificationButton_6.clicked.connect(self.detect_notification_owen)
         self.thread6.started.connect(self.worker6.task)
         self.thread6.start()
 
@@ -156,6 +162,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker7.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.statusLabel_7.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_7.setText(lines[30][:-1])
+        self.ui.notificationButton_7.clicked.connect(self.detect_notification_owen)
         self.thread7.started.connect(self.worker7.task)
         self.thread7.start()
 
@@ -164,6 +171,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker8.currTemp.connect(self.change_temp_in_mainwindow)
         self.ui.statusLabel_8.setToolTip('для работы логгера необходим статус <b>Открыт<b/>')
         self.ui.portNumber_8.setText(lines[35][:-1])
+        self.ui.notificationButton_8.clicked.connect(self.detect_notification_owen)
         self.thread8.started.connect(self.worker8.task)
         self.thread8.start()
 
@@ -474,6 +482,25 @@ class mywindow(QtWidgets.QMainWindow):
             return 7
         if obj.objectName() == 'reportButton_8':
             return 8
+
+    def detect_notification_owen(self):
+        sender = self.sender()
+        if sender.objectName() == 'notificationButton_1':
+            return 1
+        if sender.objectName() == 'notificationButton_2':
+            return 2
+        if sender.objectName() == 'notificationButton_3':
+            return 3
+        if sender.objectName() == 'notificationButton_4':
+            return 4
+        if sender.objectName() == 'notificationButton_5':
+            return 5
+        if sender.objectName() == 'notificationButton_6':
+            return 6
+        if sender.objectName() == 'notificationButton_7':
+            return 7
+        if sender.objectName() == 'notificationButton_8':
+           return 8
 
     def show_file_dialog(self, num):
         dialogSelectFiles = QFileDialog()

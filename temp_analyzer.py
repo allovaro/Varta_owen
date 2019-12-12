@@ -4,7 +4,10 @@ class Analyzer(object):
     temperature_direction = None
     temperature_average = 0
     temperature_memory = []
-
+    prev_temp = 0
+    prev_time = 0
+    next_temp = 0
+    next_time = 0
     # def __init__(self):
     #     # self.temperature_memory = self.init_list()
 
@@ -55,6 +58,20 @@ class Analyzer(object):
         else:
             return 0
 
+    def get_prediction(self):
+        """
+        С помощью уравнения прямой по двум точкам расчет следущей
+        величины температуры по текущему времени
+        """
+        next_time = dt.datetime(self.next_time.year, self.next_time.month, self.next_time.day,
+                                self.next_time.hour, self.next_time.minute, self.next_time.second).timestamp()
+        prev_time = dt.datetime(self.prev_time.year, self.prev_time.month, self.prev_time.day,
+                                self.prev_time.hour, self.prev_time.minute, self.prev_time.second).timestamp()
+        temp1 = next_time * self.prev_temp - prev_time * self.next_temp
+        temp2 = dt.datetime.today().timestamp() * (self.prev_temp - self.next_temp)
+        temp3 = next_time - prev_time
+        return (temp1 - temp2) / temp3
+
 
     def get_last_value(self):
         return self.temperature_memory[-1]
@@ -98,6 +115,16 @@ class Analyzer(object):
 
 
 analyz = Analyzer()
-print(dt.datetime.today())
-print(analyz.calc_next_timestamp('1.0', '2.0', dt.datetime.today()))
+analyz.prev_temp = 450
+analyz.next_temp = 300
+analyz.prev_time = dt.datetime.today() - dt.timedelta(hours=1)
+analyz.next_time = dt.datetime.today() + dt.timedelta(hours=5)
+print(analyz.get_prediction())
+
+# print(dt.datetime.today())
+# print(analyz.calc_next_timestamp('1.0', '2.0', dt.datetime.today()))
+# my_val = analyz.calc_next_timestamp('1.0', '2.0', dt.datetime.today())
+# print(dt.datetime.today().timestamp())
+# print(dt.datetime(2017, 6, 11, 0, 0).timestamp())
+# print(dt.datetime(my_val.year, my_val.month, my_val.day, my_val.hour, my_val.minute, my_val.second).timestamp())
 

@@ -44,8 +44,8 @@ class mywindow(QtWidgets.QMainWindow):
     thread4 = QtCore.QThread()
     thread5 = QtCore.QThread()
     thread6 = QtCore.QThread()
-    thread7 = QtCore.QThread()
     thread8 = QtCore.QThread()
+    thread7 = QtCore.QThread()
     # thread9 = QtCore.QThread()
     # thread10 = QtCore.QThread()
 

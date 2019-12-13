@@ -160,3 +160,7 @@ class SerialWorker(QtCore.QObject):
 
             writer.writerow([int(time.time()), num])
             # writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])
+
+    def execute_analysis(self, obj, act_temperature):
+        if len(obj.temperature_memory) > 5:
+            obj.temperature_memory[0]

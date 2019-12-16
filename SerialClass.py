@@ -6,6 +6,7 @@ from PyQt5.QtSerialPort import QSerialPortInfo
 import time
 import os
 import csv
+import datetime as dt
 from temp_analyzer import *
 from smsc_api import *
 
@@ -58,7 +59,7 @@ class SerialWorker(QtCore.QObject):
                     try:
                         data_int = int(data)
                         self.add_new_data(work_path + '\\' + file_name, data_int)
-                        analyz.add_new_value(data_int)
+                        self.execute_analysis(self.analyzer, data_int)
                     except:
                         return False
             else:
@@ -162,5 +163,26 @@ class SerialWorker(QtCore.QObject):
             # writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])
 
     def execute_analysis(self, obj, act_temperature):
-        if len(obj.temperature_memory) > 5:
-            obj.temperature_memory[0]
+        obj.add_new_value(act_temperature)  # Добавляем текущее значение температуры в буффер
+        print(obj.temperature_memory)
+        if len(obj.temperature_memory) >= 14:
+            aver1 = (obj.temperature_memory[0] + obj.temperature_memory[1] + obj.temperature_memory[2]) / 3
+            aver2 = (obj.temperature_memory[-1] + obj.temperature_memory[-2] + obj.temperature_memory[-3]) / 3
+            if aver1 > aver2:   # Определяем направление температуры нагрев или остывание
+                obj.temperature_direction = 'DOWN'
+            else:
+                obj.temperature_direction = 'UP'
+            print(obj.in_range)
+            if not obj.in_range:
+                point1, point2, point3, point4 = obj.find_points('graph.cfg', int(self.owen_num), act_temperature)
+                print(point1)
+                print(point2)
+                print(point3)
+                print(point4)
+            if obj.in_range:
+                prediction = obj.get_prediction()
+                if prediction + obj.delta > act_temperature > prediction - obj.delta:
+                    pass
+                else:
+                    obj.big_difference = True
+                    obj.start_timer = dt.datetime.today()

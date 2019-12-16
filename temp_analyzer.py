@@ -1,13 +1,17 @@
 import datetime as dt
 
 class Analyzer(object):
-    temperature_direction = None
+    temperature_direction = 'ODD'
+    in_range = False
     temperature_average = 0
     temperature_memory = []
     prev_temp = 0
     prev_time = 0
     next_temp = 0
     next_time = 0
+    big_difference = False
+    delta_val = 3
+    start_timer = None
     # def __init__(self):
     #     # self.temperature_memory = self.init_list()
 
@@ -72,7 +76,6 @@ class Analyzer(object):
         temp3 = next_time - prev_time
         return (temp1 - temp2) / temp3
 
-
     def get_last_value(self):
         return self.temperature_memory[-1]
 
@@ -114,12 +117,12 @@ class Analyzer(object):
                 return False
 
 
-analyz = Analyzer()
-analyz.prev_temp = 450
-analyz.next_temp = 300
-analyz.prev_time = dt.datetime.today() - dt.timedelta(hours=1)
-analyz.next_time = dt.datetime.today() + dt.timedelta(hours=5)
-print(analyz.get_prediction())
+# analyz = Analyzer()
+# analyz.prev_temp = 450
+# analyz.next_temp = 300
+# analyz.prev_time = dt.datetime.today() - dt.timedelta(hours=1)
+# analyz.next_time = dt.datetime.today() + dt.timedelta(hours=5)
+# print(analyz.get_prediction())
 
 # print(dt.datetime.today())
 # print(analyz.calc_next_timestamp('1.0', '2.0', dt.datetime.today()))

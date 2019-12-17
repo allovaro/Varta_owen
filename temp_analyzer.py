@@ -1,8 +1,10 @@
 import datetime as dt
+import time
 
 class Analyzer(object):
     temperature_direction = 'ODD'
     in_range = False
+    tracking_status = 'IDLE'
     temperature_average = 0
     temperature_memory = []
     prev_temp = 0
@@ -14,6 +16,71 @@ class Analyzer(object):
     start_timer = None
     # def __init__(self):
     #     # self.temperature_memory = self.init_list()
+
+
+    def execute_analysis(self, owen_num, act_temperature):
+        self.add_new_value(act_temperature)  # Добавляем текущее значение температуры в буффер
+        # print(self.temperature_memory)
+
+        if self.tracking_status == 'IDLE':
+            if len(self.temperature_memory) >= 14:
+                aver1 = (self.temperature_memory[0] + self.temperature_memory[1] + self.temperature_memory[2]) / 3
+                aver2 = (self.temperature_memory[-1] + self.temperature_memory[-2] + self.temperature_memory[-3]) / 3
+                if aver1 > aver2:   # Определяем направление температуры нагрев или остывание
+                    self.temperature_direction = 'DOWN'
+                    self.tracking_status = 'SICKING_POINTS'
+                    print('Температура падает')
+                else:
+                    self.temperature_direction = 'UP'
+                    self.tracking_status = 'SICKING_POINTS'
+                    print('Температура растет')
+
+        # Определяем между какими точками графика находимся
+        elif self.tracking_status == 'SICKING_POINTS':
+            # print(self.tracking_status)
+            self.points = self.find_points('graph.cfg', owen_num, act_temperature)
+            # print(self.points)
+            if self.points:
+                if self.temperature_direction == 'UP':
+                    self.prev_temp = self.points[0][0]
+                    self.next_temp = self.points[0][1]
+                if self.temperature_direction == 'DOWN':
+                    self.prev_temp = self.points[0][2]
+                    self.next_temp = self.points[0][3]
+                if self.next_temp - 10 <= act_temperature or self.prev_temp >= act_temperature:
+                    self.prev_time = dt.datetime.today()
+                    self.next_time = self.prev_time + dt.timedelta(minutes=self.points[1][1] -
+                    self.points[1][0])
+                    print('Prev_temp = {} Prev_time = {}'.format(self.prev_temp, self.prev_time))
+                    print('Next_temp = {} Next_time = {}'.format(self.next_temp, self.next_time))
+                    self.in_range = True
+                else:
+                    if self.in_range:
+                        self.tracking_status = 'TRACKING'
+
+
+        # Ждем когда дойдем до точки чтобы зафиксировать время и от последнего
+        # в дальнейшем отталкиваться для расчета точки в будущем
+        elif self.tracking_status == 'WAIT_ON_PATH':
+            if self.next_temp -3 < act_temperature < self.next_temp + 3:
+                self.tracking_status = 'SICKING_POINTS'
+            if self.temperature_direction == 'UP':
+                print('Prev_temp = {}'.format(self.prev_temp))
+                print('Next_temp = {}'.format(self.next_temp))
+            if self.temperature_direction == 'DOWN':
+                print('Prev_temp = {}'.format(self.prev_temp))
+                print('Next_temp = {}'.format(self.next_temp))
+
+
+        # Отслеживаем по графику температуру
+        elif self.tracking_status == 'TRACKING':
+            prediction = self.get_prediction()
+            print('Actual_temp = {}, Prediction = {}'.format(act_temperature, prediction))
+            if prediction - self.delta_val < act_temperature < prediction + self.delta_val:
+                pass
+            else:
+                self.big_difference = True
+                self.start_timer = dt.datetime.today()
 
     @staticmethod
     def calc_average(all_values):
@@ -67,6 +134,8 @@ class Analyzer(object):
         С помощью уравнения прямой по двум точкам расчет следущей
         величины температуры по текущему времени
         """
+        print(self.next_time)
+        print(self.prev_time)
         next_time = dt.datetime(self.next_time.year, self.next_time.month, self.next_time.day,
                                 self.next_time.hour, self.next_time.minute, self.next_time.second).timestamp()
         prev_time = dt.datetime(self.prev_time.year, self.prev_time.month, self.prev_time.day,
@@ -92,7 +161,7 @@ class Analyzer(object):
                     array = list(map(float, line.split(' ')))
                     if line_time:
                         array_time = list(map(float, line_time.split(' ')))
-                        print(array_time)
+                        # print(array_time)
         except FileNotFoundError:
             print('File graph.cfg not found')
         point1 = 0
@@ -108,8 +177,8 @@ class Analyzer(object):
                 if array[i] <= current_val <= array[i + 1]:
                     point1 = array[i]
                     point2 = array[i + 1]
-                    print(array_time[i])
-                    print(array_time[i + 1])
+                    # print(array_time[i])
+                    # print(array_time[i + 1])
                     temp_list = str(array_time[i]).split('.')
                     point1_time = int(temp_list[0]) * 60 + int(temp_list[1])
                     temp_list = str(array_time[i + 1]).split('.')
@@ -139,8 +208,15 @@ class Analyzer(object):
                 return False
 
 
+
 analyz = Analyzer()
-print(analyz.find_points('graph.cfg', 2, 456))
+act_temperature = 34
+# print(analyz.find_points('graph.cfg', 2, 156))
+while True:
+    act_temperature += 1
+    # print('Actual_temp = {}'.format(act_temperature))
+    analyz.execute_analysis(2, act_temperature)
+    time.sleep(1)
 
 # analyz.prev_temp = 450
 # analyz.next_temp = 300
@@ -154,4 +230,3 @@ print(analyz.find_points('graph.cfg', 2, 456))
 # print(dt.datetime.today().timestamp())
 # print(dt.datetime(2017, 6, 11, 0, 0).timestamp())
 # print(dt.datetime(my_val.year, my_val.month, my_val.day, my_val.hour, my_val.minute, my_val.second).timestamp())
-

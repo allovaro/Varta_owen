@@ -158,7 +158,7 @@ class SerialWorker(QtCore.QObject):
             writer = csv.writer(fp, delimiter=';')
             # writer.writerow([int(time.time()), num])  # write header
             # writer.writerow([datetime.datetime.today(), num])
-
+#
             writer.writerow([int(time.time()), num])
             # writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])
 
@@ -174,11 +174,9 @@ class SerialWorker(QtCore.QObject):
                 obj.temperature_direction = 'UP'
             print(obj.in_range)
             if not obj.in_range:
-                point1, point2, point3, point4 = obj.find_points('graph.cfg', int(self.owen_num), act_temperature)
-                print(point1)
-                print(point2)
-                print(point3)
-                print(point4)
+                obj.in_range = True
+                points = obj.find_points('graph.cfg', int(self.owen_num), act_temperature)
+
             if obj.in_range:
                 prediction = obj.get_prediction()
                 if prediction + obj.delta > act_temperature > prediction - obj.delta:

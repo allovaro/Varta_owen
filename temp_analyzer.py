@@ -81,32 +81,54 @@ class Analyzer(object):
 
     @staticmethod
     def find_points(file_name, owen_num, current_val):
+        array = []
+        array_time = []
         try:
             with open(file_name, 'r') as file:
                 for i in range(owen_num * 2 - 1):
                     line = file.readline()
+                line_time = file.readline()
                 if line:
                     array = list(map(float, line.split(' ')))
+                    if line_time:
+                        array_time = list(map(float, line_time.split(' ')))
+                        print(array_time)
         except FileNotFoundError:
             print('File graph.cfg not found')
         point1 = 0
         point2 = 0
         point3 = -1
         point4 = -1
+        point1_time = 0
+        point2_time = 0
+        point3_time = -1
+        point4_time = -1
         for i in range(len(array)):
             if i < len(array) - 1:
                 if array[i] <= current_val <= array[i + 1]:
                     point1 = array[i]
                     point2 = array[i + 1]
+                    print(array_time[i])
+                    print(array_time[i + 1])
+                    temp_list = str(array_time[i]).split('.')
+                    point1_time = int(temp_list[0]) * 60 + int(temp_list[1])
+                    temp_list = str(array_time[i + 1]).split('.')
+                    point2_time = int(temp_list[0]) * 60 + int(temp_list[1])
         for i in reversed(range(len(array))):
             if i > 0:
                 if array[i] <= current_val <= array[i - 1]:
                     point3 = array[i]
                     point4 = array[i - 1]
+                    temp_list = array_time[i].split('.')
+                    point3_time = int(temp_list[0]) * 60 + int(temp_list[1])
+                    temp_list = array_time[i - 1].split('.')
+                    point4_time = int(temp_list[0]) * 60 + int(temp_list[1])
         if point1 == point4 and point2 == point3:
-            return point1, point2, -1, -1
+            return [[point1, point2, -1, -1], [point1_time, point2_time, -1, -1]]
+            # return point1, point2, -1, -1
         else:
-            return point1, point2, point3, point4
+            # return point1, point2, point3, point4
+            return [[point1, point2, point3, point4], [point1_time, point2_time, point3_time, point4_time]]
         return False
 
     def is_temp_changes(self):
@@ -117,7 +139,9 @@ class Analyzer(object):
                 return False
 
 
-# analyz = Analyzer()
+analyz = Analyzer()
+print(analyz.find_points('graph.cfg', 2, 456))
+
 # analyz.prev_temp = 450
 # analyz.next_temp = 300
 # analyz.prev_time = dt.datetime.today() - dt.timedelta(hours=1)

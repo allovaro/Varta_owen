@@ -1,6 +1,7 @@
 import datetime as dt
 import time
 
+
 class Analyzer(object):
     temperature_direction = 'ODD'
     in_range = False
@@ -14,14 +15,11 @@ class Analyzer(object):
     big_difference = False
     delta_val = 3
     start_timer = None
-    # def __init__(self):
-    #     # self.temperature_memory = self.init_list()
-
+    points = None
 
     def execute_analysis(self, owen_num, act_temperature):
         self.add_new_value(act_temperature)  # Добавляем текущее значение температуры в буффер
-        # print(self.temperature_memory)
-
+        # print(self.tracking_status)
         if self.tracking_status == 'IDLE':
             if len(self.temperature_memory) >= 14:
                 aver1 = (self.temperature_memory[0] + self.temperature_memory[1] + self.temperature_memory[2]) / 3
@@ -37,26 +35,32 @@ class Analyzer(object):
 
         # Определяем между какими точками графика находимся
         elif self.tracking_status == 'SICKING_POINTS':
-            # print(self.tracking_status)
             self.points = self.find_points('graph.cfg', owen_num, act_temperature)
-            # print(self.points)
+            print(self.points)
             if self.points:
+                self.prev_time = dt.datetime.today()
+                self.next_time = self.prev_time + dt.timedelta(minutes=self.points[1][1] -
+                                                                       self.points[1][0])
                 if self.temperature_direction == 'UP':
                     self.prev_temp = self.points[0][0]
                     self.next_temp = self.points[0][1]
+                    if self.next_temp - 10 <= act_temperature or self.prev_temp >= act_temperature:
+                        self.in_range = True
+                    else:
+                        if self.in_range:
+                            self.tracking_status = 'TRACKING'
+
                 if self.temperature_direction == 'DOWN':
                     self.prev_temp = self.points[0][2]
                     self.next_temp = self.points[0][3]
-                if self.next_temp - 10 <= act_temperature or self.prev_temp >= act_temperature:
-                    self.prev_time = dt.datetime.today()
-                    self.next_time = self.prev_time + dt.timedelta(minutes=self.points[1][1] -
-                    self.points[1][0])
-                    print('Prev_temp = {} Prev_time = {}'.format(self.prev_temp, self.prev_time))
-                    print('Next_temp = {} Next_time = {}'.format(self.next_temp, self.next_time))
-                    self.in_range = True
-                else:
-                    if self.in_range:
-                        self.tracking_status = 'TRACKING'
+                    if self.next_temp + 10 <= act_temperature or self.prev_temp >= act_temperature:
+                        self.in_range = True
+                    else:
+                        if self.in_range:
+                            self.tracking_status = 'TRACKING'
+            # print('next_time = {} prev_time = {}'.format(self.next_time, self.prev_time))
+            print('prev_temp = {} act_temp = {}'.format(self.prev_temp, act_temperature))
+            print('next_temp = {} act_temp = {}'.format(self.next_temp, act_temperature))
 
 
         # Ждем когда дойдем до точки чтобы зафиксировать время и от последнего
@@ -70,7 +74,6 @@ class Analyzer(object):
             if self.temperature_direction == 'DOWN':
                 print('Prev_temp = {}'.format(self.prev_temp))
                 print('Next_temp = {}'.format(self.next_temp))
-
 
         # Отслеживаем по графику температуру
         elif self.tracking_status == 'TRACKING':
@@ -134,8 +137,6 @@ class Analyzer(object):
         С помощью уравнения прямой по двум точкам расчет следущей
         величины температуры по текущему времени
         """
-        print(self.next_time)
-        print(self.prev_time)
         next_time = dt.datetime(self.next_time.year, self.next_time.month, self.next_time.day,
                                 self.next_time.hour, self.next_time.minute, self.next_time.second).timestamp()
         prev_time = dt.datetime(self.prev_time.year, self.prev_time.month, self.prev_time.day,
@@ -177,8 +178,6 @@ class Analyzer(object):
                 if array[i] <= current_val <= array[i + 1]:
                     point1 = array[i]
                     point2 = array[i + 1]
-                    # print(array_time[i])
-                    # print(array_time[i + 1])
                     temp_list = str(array_time[i]).split('.')
                     point1_time = int(temp_list[0]) * 60 + int(temp_list[1])
                     temp_list = str(array_time[i + 1]).split('.')
@@ -188,15 +187,13 @@ class Analyzer(object):
                 if array[i] <= current_val <= array[i - 1]:
                     point3 = array[i]
                     point4 = array[i - 1]
-                    temp_list = array_time[i].split('.')
+                    temp_list = str(array_time[i]).split('.')
                     point3_time = int(temp_list[0]) * 60 + int(temp_list[1])
-                    temp_list = array_time[i - 1].split('.')
+                    temp_list = str(array_time[i - 1]).split('.')
                     point4_time = int(temp_list[0]) * 60 + int(temp_list[1])
         if point1 == point4 and point2 == point3:
             return [[point1, point2, -1, -1], [point1_time, point2_time, -1, -1]]
-            # return point1, point2, -1, -1
         else:
-            # return point1, point2, point3, point4
             return [[point1, point2, point3, point4], [point1_time, point2_time, point3_time, point4_time]]
         return False
 
@@ -210,23 +207,11 @@ class Analyzer(object):
 
 
 analyz = Analyzer()
-act_temperature = 34
+act_temperature = 290
 # print(analyz.find_points('graph.cfg', 2, 156))
 while True:
-    act_temperature += 1
+    act_temperature -= 1
     # print('Actual_temp = {}'.format(act_temperature))
     analyz.execute_analysis(2, act_temperature)
     time.sleep(1)
 
-# analyz.prev_temp = 450
-# analyz.next_temp = 300
-# analyz.prev_time = dt.datetime.today() - dt.timedelta(hours=1)
-# analyz.next_time = dt.datetime.today() + dt.timedelta(hours=5)
-# print(analyz.get_prediction())
-
-# print(dt.datetime.today())
-# print(analyz.calc_next_timestamp('1.0', '2.0', dt.datetime.today()))
-# my_val = analyz.calc_next_timestamp('1.0', '2.0', dt.datetime.today())
-# print(dt.datetime.today().timestamp())
-# print(dt.datetime(2017, 6, 11, 0, 0).timestamp())
-# print(dt.datetime(my_val.year, my_val.month, my_val.day, my_val.hour, my_val.minute, my_val.second).timestamp())

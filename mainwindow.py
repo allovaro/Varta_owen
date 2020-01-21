@@ -12,7 +12,7 @@ from report_ui import Ui_Report
 from notification_ui import Ui_Notification
 import sys, glob, os, csv
 import datetime as dt
-from serial.tools.list_ports_windows import comports
+# from serial.tools.list_ports_windows import comports
 from SerialClass import SerialWorker
 import matplotlib.dates as md
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)

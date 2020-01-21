@@ -205,13 +205,13 @@ class Analyzer(object):
                 return False
 
 
-
-analyz = Analyzer()
-act_temperature = 290
-# print(analyz.find_points('graph.cfg', 2, 156))
-while True:
-    act_temperature -= 1
-    # print('Actual_temp = {}'.format(act_temperature))
-    analyz.execute_analysis(2, act_temperature)
-    time.sleep(1)
+if __name__ == "__main__":
+    analyz = Analyzer()
+    act_temperature = 290
+    # print(analyz.find_points('graph.cfg', 2, 156))
+    while True:
+        act_temperature -= 1
+        # print('Actual_temp = {}'.format(act_temperature))
+        analyz.execute_analysis(2, act_temperature)
+        time.sleep(1)
 

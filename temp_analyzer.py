@@ -12,6 +12,7 @@ class Analyzer(object):
     prev_time = 0
     next_temp = 0
     next_time = 0
+    time_delta = 0
     big_difference = False
     delta_val = 3
     start_timer = None
@@ -19,9 +20,9 @@ class Analyzer(object):
 
     def execute_analysis(self, owen_num, act_temperature):
         self.add_new_value(act_temperature)  # Добавляем текущее значение температуры в буффер
-        # print(self.tracking_status)
+        print(self.tracking_status)
         if self.tracking_status == 'IDLE':
-            if len(self.temperature_memory) >= 14:
+            if len(self.temperature_memory) >= 4:
                 aver1 = (self.temperature_memory[0] + self.temperature_memory[1] + self.temperature_memory[2]) / 3
                 aver2 = (self.temperature_memory[-1] + self.temperature_memory[-2] + self.temperature_memory[-3]) / 3
                 if aver1 > aver2:   # Определяем направление температуры нагрев или остывание
@@ -32,53 +33,48 @@ class Analyzer(object):
                     self.temperature_direction = 'UP'
                     self.tracking_status = 'SICKING_POINTS'
                     print('Температура растет')
+            print(self.temperature_memory)
 
         # Определяем между какими точками графика находимся
         elif self.tracking_status == 'SICKING_POINTS':
-            self.points = self.find_points('graph.cfg', owen_num, act_temperature)
+            print(owen_num, act_temperature)
+            self.points = self.find_points('graph.cfg', int(owen_num), act_temperature)
             print(self.points)
             if self.points:
-                self.prev_time = dt.datetime.today()
-                self.next_time = self.prev_time + dt.timedelta(minutes=self.points[1][1] -
-                                                                       self.points[1][0])
                 if self.temperature_direction == 'UP':
+                    self.time_delta = dt.timedelta(minutes=self.points[1][1] - self.points[1][0])
                     self.prev_temp = self.points[0][0]
                     self.next_temp = self.points[0][1]
-                    if self.next_temp - 10 <= act_temperature or self.prev_temp >= act_temperature:
-                        self.in_range = True
-                    else:
-                        if self.in_range:
-                            self.tracking_status = 'TRACKING'
+                    if self.next_temp - self.prev_temp != 0:
+                        delta = (act_temperature - self.prev_temp) / (self.next_temp - self.prev_temp) * self.time_delta
+                        self.next_time = dt.datetime.today() + self.time_delta - delta
+                        self.prev_time = self.next_time - self.time_delta
+                        self.tracking_status = 'TRACKING'
 
                 if self.temperature_direction == 'DOWN':
-                    self.prev_temp = self.points[0][2]
-                    self.next_temp = self.points[0][3]
-                    if self.next_temp + 10 <= act_temperature or self.prev_temp >= act_temperature:
-                        self.in_range = True
-                    else:
-                        if self.in_range:
-                            self.tracking_status = 'TRACKING'
-            # print('next_time = {} prev_time = {}'.format(self.next_time, self.prev_time))
+                    self.time_delta = dt.timedelta(minutes=self.points[1][2] - self.points[1][3])
+                    self.prev_temp = self.points[0][3]
+                    self.next_temp = self.points[0][2]
+                    if self.prev_temp - self.next_temp != 0:
+                        delta = (self.prev_temp - act_temperature) / (self.prev_temp - self.next_temp) * self.time_delta
+                        self.next_time = dt.datetime.today() + self.time_delta - delta
+                        self.prev_time = self.next_time - self.time_delta
+                        self.tracking_status = 'TRACKING'
             print('prev_temp = {} act_temp = {}'.format(self.prev_temp, act_temperature))
             print('next_temp = {} act_temp = {}'.format(self.next_temp, act_temperature))
-
-
-        # Ждем когда дойдем до точки чтобы зафиксировать время и от последнего
-        # в дальнейшем отталкиваться для расчета точки в будущем
-        elif self.tracking_status == 'WAIT_ON_PATH':
-            if self.next_temp -3 < act_temperature < self.next_temp + 3:
-                self.tracking_status = 'SICKING_POINTS'
-            if self.temperature_direction == 'UP':
-                print('Prev_temp = {}'.format(self.prev_temp))
-                print('Next_temp = {}'.format(self.next_temp))
-            if self.temperature_direction == 'DOWN':
-                print('Prev_temp = {}'.format(self.prev_temp))
-                print('Next_temp = {}'.format(self.next_temp))
 
         # Отслеживаем по графику температуру
         elif self.tracking_status == 'TRACKING':
             prediction = self.get_prediction()
-            print('Actual_temp = {}, Prediction = {}'.format(act_temperature, prediction))
+            if self.temperature_direction == 'UP':
+                if self.next_temp < act_temperature:
+                    self.temperature_memory = []
+                    self.tracking_status = 'IDLE'
+            if self.temperature_direction == 'DOWN':
+                if self.next_temp > act_temperature:
+                    self.temperature_memory = []
+                    self.tracking_status = 'IDLE'
+            print('Actual_temp = {}, Prediction = {}'.format(act_temperature, round(prediction, 1)))
             if prediction - self.delta_val < act_temperature < prediction + self.delta_val:
                 pass
             else:
@@ -105,7 +101,6 @@ class Analyzer(object):
                     self.temperature_memory.append(new_value)
         else:
             self.temperature_memory.append(new_value)
-        # print(len(self.temperature_memory))
 
     @staticmethod
     def find_and_add_check_point(curr_value, next_check_point):
@@ -141,10 +136,19 @@ class Analyzer(object):
                                 self.next_time.hour, self.next_time.minute, self.next_time.second).timestamp()
         prev_time = dt.datetime(self.prev_time.year, self.prev_time.month, self.prev_time.day,
                                 self.prev_time.hour, self.prev_time.minute, self.prev_time.second).timestamp()
-        temp1 = next_time * self.prev_temp - prev_time * self.next_temp
-        temp2 = dt.datetime.today().timestamp() * (self.prev_temp - self.next_temp)
-        temp3 = next_time - prev_time
-        return (temp1 - temp2) / temp3
+        print(f'prev_time={self.prev_time.minute}, next_time={self.next_time.minute}')
+        print(f'prev_temp={self.prev_temp}, next_temp={self.next_temp}')
+        if self.temperature_direction == 'UP':
+            temp1 = next_time * self.prev_temp - prev_time * self.next_temp
+            temp2 = dt.datetime.today().timestamp() * (self.prev_temp - self.next_temp)
+            temp3 = next_time - prev_time
+            return (temp1 - temp2) / temp3
+        else:
+            temp1 = next_time * self.prev_temp - prev_time * self.next_temp
+            temp2 = dt.datetime.today().timestamp() * (self.prev_temp - self.next_temp)
+            temp3 = next_time - prev_time
+            print(temp1, temp2, temp3)
+            return (temp1 - temp2) / temp3
 
     def get_last_value(self):
         return self.temperature_memory[-1]
@@ -155,12 +159,17 @@ class Analyzer(object):
         array_time = []
         try:
             with open(file_name, 'r') as file:
+                # print(1)
                 for i in range(owen_num * 2 - 1):
                     line = file.readline()
+                # print(2)
                 line_time = file.readline()
+                # print(3)
                 if line:
+                    # print(4)
                     array = list(map(float, line.split(' ')))
                     if line_time:
+                        # print(5)
                         array_time = list(map(float, line_time.split(' ')))
                         # print(array_time)
         except FileNotFoundError:
@@ -179,18 +188,18 @@ class Analyzer(object):
                     point1 = array[i]
                     point2 = array[i + 1]
                     temp_list = str(array_time[i]).split('.')
-                    point1_time = int(temp_list[0]) * 60 + int(temp_list[1])
+                    point1_time = int(temp_list[0]) * 60 + int(temp_list[1]) * 10
                     temp_list = str(array_time[i + 1]).split('.')
-                    point2_time = int(temp_list[0]) * 60 + int(temp_list[1])
+                    point2_time = int(temp_list[0]) * 60 + int(temp_list[1]) * 10
         for i in reversed(range(len(array))):
             if i > 0:
                 if array[i] <= current_val <= array[i - 1]:
                     point3 = array[i]
                     point4 = array[i - 1]
                     temp_list = str(array_time[i]).split('.')
-                    point3_time = int(temp_list[0]) * 60 + int(temp_list[1])
+                    point3_time = int(temp_list[0]) * 60 + int(temp_list[1]) * 10
                     temp_list = str(array_time[i - 1]).split('.')
-                    point4_time = int(temp_list[0]) * 60 + int(temp_list[1])
+                    point4_time = int(temp_list[0]) * 60 + int(temp_list[1]) * 10
         if point1 == point4 and point2 == point3:
             return [[point1, point2, -1, -1], [point1_time, point2_time, -1, -1]]
         else:
@@ -205,13 +214,39 @@ class Analyzer(object):
                 return False
 
 
-
-analyz = Analyzer()
-act_temperature = 290
-# print(analyz.find_points('graph.cfg', 2, 156))
-while True:
-    act_temperature -= 1
-    # print('Actual_temp = {}'.format(act_temperature))
-    analyz.execute_analysis(2, act_temperature)
-    time.sleep(1)
-
+# analyz = Analyzer()
+# act_temperature = 504
+# direction = True
+# # print(analyz.find_points('graph.cfg', 2, 156))
+# while True:
+#     if direction:
+#         if act_temperature < 150:
+#             act_temperature += 0.10417
+#         elif 150 <= act_temperature < 270:
+#             act_temperature += 0.1
+#         elif 270 <= act_temperature < 350:
+#             act_temperature += 0.667
+#         elif 350 <= act_temperature < 450:
+#             act_temperature += 0.0834
+#         elif 450 <= act_temperature < 490:
+#             act_temperature += 0.0334
+#         elif 490 <= act_temperature < 505:
+#             act_temperature += 0.0125
+#         elif act_temperature >= 505:
+#             direction = False
+#     else:
+#         if 500 <= act_temperature:
+#             act_temperature -= 0.00417
+#         elif 480 <= act_temperature < 500:
+#             act_temperature -= 0.017
+#         elif 450 <= act_temperature < 480:
+#             act_temperature -= 0.025
+#         elif 320 <= act_temperature < 450:
+#             act_temperature -= 0.10834
+#         elif 120 <= act_temperature < 320:
+#             act_temperature -= 0.167
+#         elif 25 < act_temperature < 120:
+#             act_temperature -= 0.1
+#     # print('Actual_temp = {}'.format(act_temperature))
+#     analyz.execute_analysis(2, act_temperature)
+#     time.sleep(1)

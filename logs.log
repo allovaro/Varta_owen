@@ -1,0 +1,57 @@
+2020-03-16 19:39:05,782 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 19:39:05,787 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 19:39:05,789 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 19:39:34,043 - SerialWorker2 - INFO - Статус отслеживания температуры SICKING_POINTS
+2020-03-16 19:39:35,053 - SerialWorker2 - INFO - Статус отслеживания температуры TRACKING
+2020-03-16 19:45:08,106 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 19:45:08,111 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 19:45:08,112 - SerialWorker2 - INFO - Создан новый файл .\dat\3\16
+2020-03-16 19:45:09,121 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 19:45:36,453 - SerialWorker2 - INFO - Статус отслеживания температуры SICKING_POINTS
+2020-03-16 19:45:37,464 - SerialWorker2 - INFO - Статус отслеживания температуры TRACKING
+2020-03-16 19:48:22,641 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 19:49:53,579 - SerialWorker2 - INFO - Статус отслеживания температуры SICKING_POINTS
+2020-03-16 19:49:54,588 - SerialWorker2 - INFO - Статус отслеживания температуры TRACKING
+2020-03-16 19:55:00,259 - SerialWorker2 - INFO - Создан новый файл .\dat\3\16
+2020-03-16 19:57:29,277 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 19:57:29,287 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 19:58:13,564 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 19:58:13,569 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 19:59:10,065 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 19:59:10,067 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:00:07,270 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:00:07,273 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:01:53,341 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:01:53,344 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:02:14,284 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:02:14,287 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:04:38,258 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:04:38,262 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:05:17,347 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:05:17,349 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:05:17,350 - SerialWorker2 - INFO - Создан новый файл .\dat\3\16
+2020-03-16 20:05:36,134 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:05:36,136 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:06:00,920 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:06:00,923 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:06:33,081 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:06:33,087 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:06:33,090 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 20:08:43,154 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:08:43,154 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:08:43,157 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 20:11:11,793 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:11:11,799 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:11:11,802 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 20:12:30,992 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:12:30,995 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:12:30,997 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 20:14:27,028 - SerialWorker2 - INFO - Статус отслеживания температуры SICKING_POINTS
+2020-03-16 20:14:28,038 - SerialWorker2 - INFO - Статус отслеживания температуры TRACKING
+2020-03-16 20:15:00,326 - SerialWorker2 - INFO - Создан новый файл .\dat\3\16
+2020-03-16 20:16:52,921 - SerialWorker2 - INFO - Порт COM11 открыт
+2020-03-16 20:16:52,926 - SerialWorker1 - INFO - Порт COM1 открыт
+2020-03-16 20:16:52,928 - SerialWorker2 - INFO - Статус отслеживания температуры IDLE
+2020-03-16 20:18:51,012 - SerialWorker2 - INFO - Статус отслеживания температуры SICKING_POINTS
+2020-03-16 20:19:31,376 - SerialWorker2 - INFO - Статус отслеживания температуры TRACKING
+2020-03-16 20:25:00,470 - SerialWorker2 - INFO - Создан новый файл .\dat\3\16

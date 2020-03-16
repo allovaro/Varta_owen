@@ -9,6 +9,8 @@ import csv
 import datetime as dt
 from temp_analyzer import *
 from smsc_api import *
+import logging
+
 
 class SerialWorker(QtCore.QObject):
     """
@@ -19,6 +21,8 @@ class SerialWorker(QtCore.QObject):
     currTemp = pyqtSignal(str)
     smsc = SMSC()
     analyzer = Analyzer()
+    logger = None
+    prev_cycle_temp = 0
 
     def __init__(self, owen_num, port_name='', baudrate=9600):
         QtCore.QObject.__init__(self)
@@ -26,6 +30,7 @@ class SerialWorker(QtCore.QObject):
         self.baudrate = baudrate
         self.serial_port = serial.Serial()
         self.owen_num = str(owen_num)
+        self.init_logging()
 
     def task(self):
         """
@@ -36,30 +41,46 @@ class SerialWorker(QtCore.QObject):
         # if self.owen_num == '1':
             # print(self.smsc.get_balance())
             # self.smsc.send_sms("79064168910", "Привет от варты", sender="sms")
+        prev_status = 'EMPTY'
+        port_status = False
         while True:
             time.sleep(1)
             info = QSerialPortInfo.availablePorts()
             if self.serial_port.isOpen():
                 self.port_opened.emit('open')
+                if not port_status:
+                    self.logger.info(f'Порт {self.port_name} открыт')
+                port_status = True
                 try:
                     data = self.serial_port.readline().decode("ascii")
                     data = data.rstrip()
-                    self.currTemp.emit(data)
+                    if self.check_temperature(data):
+                        self.currTemp.emit(data)
                 except serial.SerialException:
                     self.serial_port.close()
                     self.port_opened.emit('close')
+                    port_status = False
+                    self.logger.info(f'Порт {self.port_name} закрыт')
                     self.currTemp.emit('-1')
-                    print('Port {} error'.format(self.port_name))
+                    # print('Port {} error'.format(self.port_name))
 
-                work_path = self.check_dir_path()  #  Проверяем существует ли папка с текущим днем если нет, то создаем
+                work_path = self.check_dir_path()  # Проверяем существует ли папка с текущим днем если нет, то создаем
                 file_name = self.last_file_name(600, work_path, self.owen_num)
-                if file_name == '-1':  #  Проверка есть ли файл старше 15 минут
+                if file_name == '-1':  # Проверка есть ли файл старше 15 минут
                     self.create_new_file(work_path)
                 else:
                     try:
-                        data_int = int(data)
-                        self.add_new_data(work_path + '\\' + file_name, data_int)
-                        self.execute_analysis(self.analyzer, data_int)
+                        if self.check_temperature(data):
+                            data_int = int(data)
+                            print(data_int)
+                            if data_int != self.prev_cycle_temp:
+                                self.prev_cycle_temp = data_int
+                                self.add_new_data(work_path + '\\' + file_name, data_int)
+                                self.analyzer.execute_analysis(self.owen_num, data_int)
+                                status = self.analyzer.tracking_status
+                                if prev_status != status:
+                                    self.logger.info(f'Статус отслеживания температуры {self.analyzer.tracking_status}')
+                                prev_status = status
                     except:
                         return False
             else:
@@ -77,8 +98,10 @@ class SerialWorker(QtCore.QObject):
                                 self.serial_port.stopbits = serial.STOPBITS_ONE  # number of stop bits
                                 self.serial_port.open()
                             except IOError:
+                                self.logger.error("Cannot connect to device on port {}".format(inf.portName()))
                                 print("Cannot connect to device on port {}".format(inf.portName()))
                             except:
+                                self.logger.error("Something else goes wrong")
                                 print("Something else goes wrong")
 
     def check_dir_path(self):
@@ -151,36 +174,53 @@ class SerialWorker(QtCore.QObject):
             name += str(numbers[4])
         name += '.csv'
         f = open(path + name, 'w')
+        self.logger.info(f'Создан новый файл {path + name}')
         f.close()
 
-    def add_new_data(self, file, num):
+    @staticmethod
+    def add_new_data(file, num):
         with open(file, 'a', newline='') as fp:
             writer = csv.writer(fp, delimiter=';')
             # writer.writerow([int(time.time()), num])  # write header
             # writer.writerow([datetime.datetime.today(), num])
-#
             writer.writerow([int(time.time()), num])
             # writer.writerow([time.strftime("%H.%M:%S", time.localtime(int(time.time()))), num])
 
-    def execute_analysis(self, obj, act_temperature):
-        obj.add_new_value(act_temperature)  # Добавляем текущее значение температуры в буффер
-        print(obj.temperature_memory)
-        if len(obj.temperature_memory) >= 14:
-            aver1 = (obj.temperature_memory[0] + obj.temperature_memory[1] + obj.temperature_memory[2]) / 3
-            aver2 = (obj.temperature_memory[-1] + obj.temperature_memory[-2] + obj.temperature_memory[-3]) / 3
-            if aver1 > aver2:   # Определяем направление температуры нагрев или остывание
-                obj.temperature_direction = 'DOWN'
-            else:
-                obj.temperature_direction = 'UP'
-            print(obj.in_range)
-            if not obj.in_range:
-                obj.in_range = True
-                points = obj.find_points('graph.cfg', int(self.owen_num), act_temperature)
+    def init_logging(self):
+        self.logger = logging.getLogger('SerialWorker' + str(self.owen_num))
+        self.logger.setLevel(logging.INFO)
+        # create the logging file handler
+        fh = logging.FileHandler('logs.log')
 
-            if obj.in_range:
-                prediction = obj.get_prediction()
-                if prediction + obj.delta > act_temperature > prediction - obj.delta:
-                    pass
-                else:
-                    obj.big_difference = True
-                    obj.start_timer = dt.datetime.today()
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+        self.logger.addHandler(fh)
+
+    @staticmethod
+    def check_temperature(data):
+        if len(data) == 4 and data != '9999':
+            return True
+        else:
+            return False
+    # def execute_analysis(self, obj, act_temperature):
+    #     obj.add_new_value(act_temperature)  # Добавляем текущее значение температуры в буффер
+    #     print(obj.temperature_memory)
+    #     if len(obj.temperature_memory) >= 14:
+    #         aver1 = (obj.temperature_memory[0] + obj.temperature_memory[1] + obj.temperature_memory[2]) / 3
+    #         aver2 = (obj.temperature_memory[-1] + obj.temperature_memory[-2] + obj.temperature_memory[-3]) / 3
+    #         if aver1 > aver2:   # Определяем направление температуры нагрев или остывание
+    #             obj.temperature_direction = 'DOWN'
+    #         else:
+    #             obj.temperature_direction = 'UP'
+    #         print(obj.in_range)
+    #         if not obj.in_range:
+    #             obj.in_range = True
+    #             points = obj.find_points('graph.cfg', int(self.owen_num), act_temperature)
+    #
+    #         if obj.in_range:
+    #             prediction = obj.get_prediction()
+    #             if prediction + obj.delta > act_temperature > prediction - obj.delta:
+    #                 pass
+    #             else:
+    #                 obj.big_difference = True
+    #                 obj.start_timer = dt.datetime.today()

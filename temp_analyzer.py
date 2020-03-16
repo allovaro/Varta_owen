@@ -250,3 +250,4 @@ class Analyzer(object):
 #     # print('Actual_temp = {}'.format(act_temperature))
 #     analyz.execute_analysis(2, act_temperature)
 #     time.sleep(1)
+
